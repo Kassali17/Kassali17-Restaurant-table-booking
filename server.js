@@ -84,7 +84,7 @@ async function ensureDb() {
 // Ensure DB is ready before handling any API request
 app.use('/api', async (req, res, next) => {
     try {
-        await ensureDb();
+        await ensureDb();   
         next();
     } catch (err) {
         console.error('DB init error:', err);
