@@ -382,8 +382,4 @@ app.get('/api/track/:ref', (req, res) => {
     });
 });
 
-// Start Server
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
-    console.log(`Serving static files from /public`);
-});
+module.exports = app;
