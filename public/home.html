@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AZ Restaurant - Menu</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+    }
+
+    body{
+        font-family:'Poppins', 'Segoe UI', sans-serif;
+        background-image:url("restaurant.jpg");
+        background-size:cover;
+        background-position:center;
+        background-attachment:fixed;
+        min-height:100vh;
+        padding-bottom:40px;
+    }
+
+    body::before{
+        content:"";
+        position:fixed;
+        width:100%;
+        height:100%;
+        background:linear-gradient(135deg, rgba(0,0,0,0.7), rgba(20,10,0,0.8));
+        z-index:0;
+    }
+
+    /* Title */
+    .title{
+        text-align:center;
+        padding-top:30px;
+        position:relative;
+        z-index:1;
+    }
+
+    .title h1{
+        font-size:48px;
+        font-weight:700;
+        letter-spacing:3px;
+        background:linear-gradient(45deg, #ff7b00, #ffcc00);
+        -webkit-background-clip:text;
+        -webkit-text-fill-color:transparent;
+        background-clip:text;
+    }
+
+    .title p{
+        color:#999;
+        font-size:13px;
+        letter-spacing:5px;
+        margin-top:5px;
+        text-transform:uppercase;
+    }
+
+    /* Navbar */
+    .navbar{
+        position:relative;
+        z-index:1;
+        display:flex;
+        justify-content:center;
+        margin:20px auto;
+        width:fit-content;
+        padding:14px 40px;
+        border-radius:50px;
+        background:linear-gradient(45deg, #ff7b00, #ffcc00);
+        box-shadow:0 8px 32px rgba(255,123,0,0.3);
+    }
+
+    .navbar a{
+        text-decoration:none;
+        color:#1a1a2e;
+        font-size:16px;
+        font-weight:600;
+        margin:0 25px;
+        transition:all 0.3s ease;
+        position:relative;
+    }
+
+    .navbar a:hover{
+        color:white;
+        transform:scale(1.05);
+    }
+
+    .navbar a.active{
+        color:white;
+    }
+
+    .navbar a.active::after{
+        content:"";
+        position:absolute;
+        bottom:-6px;
+        left:0;
+        width:100%;
+        height:3px;
+        background:white;
+        border-radius:2px;
+    }
+
+    /* Section Title */
+    .section-title{
+        position:relative;
+        z-index:1;
+        text-align:center;
+        margin:35px 0 25px;
+        color:white;
+        font-size:28px;
+        font-weight:600;
+    }
+
+    .section-title span{
+        background:linear-gradient(45deg, #ff7b00, #ffcc00);
+        -webkit-background-clip:text;
+        -webkit-text-fill-color:transparent;
+        background-clip:text;
+    }
+
+    /* Menu Container */
+    .menu-container{
+        position:relative;
+        z-index:1;
+        display:flex;
+        justify-content:center;
+        gap:30px;
+        max-width:1100px;
+        margin:0 auto;
+        padding:0 20px;
+        flex-wrap:wrap;
+    }
+
+    /* Menu Card */
+    .menu-card{
+        background:rgba(255,255,255,0.08);
+        backdrop-filter:blur(12px);
+        padding:30px;
+        border-radius:25px;
+        width:340px;
+        text-align:center;
+        border:1px solid rgba(255,255,255,0.1);
+        box-shadow:0 15px 40px rgba(0,0,0,0.3);
+        transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .menu-card:hover{
+        transform:translateY(-10px);
+        box-shadow:0 25px 50px rgba(255,123,0,0.15);
+        border-color:rgba(255,123,0,0.3);
+    }
+
+    .menu-card .card-header{
+        font-size:13px;
+        font-weight:600;
+        letter-spacing:3px;
+        color:#999;
+        text-transform:uppercase;
+        margin-bottom:8px;
+    }
+
+    .menu-card h2{
+        font-size:22px;
+        font-weight:700;
+        margin-bottom:20px;
+    }
+
+    .menu-type-nonveg{
+        background:linear-gradient(45deg, #e74c3c, #ff7b00);
+        -webkit-background-clip:text;
+        -webkit-text-fill-color:transparent;
+        background-clip:text;
+    }
+
+    .menu-type-veg{
+        background:linear-gradient(45deg, #2ecc71, #27ae60);
+        -webkit-background-clip:text;
+        -webkit-text-fill-color:transparent;
+        background-clip:text;
+    }
+
+    /* Menu Items */
+    .menu-list{
+        text-align:left;
+    }
+
+    .menu-item{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:12px 0;
+        border-bottom:1px solid rgba(255,255,255,0.06);
+        transition:all 0.3s ease;
+    }
+
+    .menu-item:last-child{
+        border-bottom:none;
+    }
+
+    .menu-item:hover{
+        padding-left:8px;
+    }
+
+    .menu-item .item-name{
+        color:#ddd;
+        font-size:15px;
+        font-weight:400;
+    }
+
+    .menu-item .item-price{
+        color:#ffcc00;
+        font-size:16px;
+        font-weight:600;
+        white-space:nowrap;
+    }
+
+    /* Badge */
+    .badge{
+        display:inline-block;
+        padding:5px 16px;
+        border-radius:20px;
+        font-size:11px;
+        font-weight:600;
+        letter-spacing:1px;
+        margin-bottom:15px;
+    }
+
+    .badge-nonveg{
+        background:rgba(231,76,60,0.15);
+        color:#e74c3c;
+        border:1px solid rgba(231,76,60,0.3);
+    }
+
+    .badge-veg{
+        background:rgba(46,204,113,0.15);
+        color:#2ecc71;
+        border:1px solid rgba(46,204,113,0.3);
+    }
+
+    /* Order CTA */
+    .order-cta{
+        position:relative;
+        z-index:1;
+        text-align:center;
+        margin-top:40px;
+    }
+
+    .order-cta a{
+        display:inline-block;
+        padding:14px 50px;
+        border-radius:50px;
+        background:linear-gradient(45deg, #ff7b00, #ffcc00);
+        color:#1a1a2e;
+        font-size:16px;
+        font-weight:700;
+        text-decoration:none;
+        letter-spacing:1px;
+        transition:all 0.3s ease;
+        box-shadow:0 8px 25px rgba(255,123,0,0.3);
+    }
+
+    .order-cta a:hover{
+        transform:translateY(-3px);
+        box-shadow:0 12px 35px rgba(255,123,0,0.5);
+    }
+
+    /* Footer */
+    .footer{
+        position:relative;
+        z-index:1;
+        text-align:center;
+        margin-top:40px;
+        color:#555;
+        font-size:12px;
+        letter-spacing:2px;
+    }
+
+    /* Responsive */
+    @media (max-width:768px){
+        .menu-container{
+            flex-direction:column;
+            align-items:center;
+        }
+        .menu-card{
+            width:90%;
+        }
+        .navbar{
+            flex-wrap:wrap;
+            gap:10px;
+            padding:12px 20px;
+        }
+        .navbar a{
+            margin:5px 12px;
+            font-size:14px;
+        }
+        .title h1{
+            font-size:32px;
+        }
+    }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <h1>AZ RESTAURANT</h1>
+        <p>Delicious food, delivered fresh</p>
+    </div>
+
+    <div class="navbar">
+        <a href="home.html" class="active">HOME</a>
+        <a href="table.html">TABLE BOOKING</a>
+        <a href="takeaway.html">TAKE AWAY</a>
+        <a href="hello.html">ORDER ONLINE</a>
+    </div>
+
+    <h2 class="section-title">🍽️ <span>Today's Menu</span></h2>
+
+    <div class="menu-container">
+        <!-- Non-Veg Menu -->
+        <div class="menu-card">
+            <div class="card-header">TODAY'S SPECIAL</div>
+            <span class="badge badge-nonveg">NON-VEG</span>
+            <h2 class="menu-type-nonveg">🍗 Non-Veg Menu</h2>
+            <div class="menu-list">
+                <div class="menu-item">
+                    <span class="item-name">Chicken Biryani</span>
+                    <span class="item-price">₹150</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Mutton Biryani</span>
+                    <span class="item-price">₹250</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Chicken Fried Rice</span>
+                    <span class="item-price">₹120</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Chicken Noodles</span>
+                    <span class="item-price">₹120</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Chicken Manchurian</span>
+                    <span class="item-price">₹100</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Butter Chicken</span>
+                    <span class="item-price">₹100</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Chicken Tikka</span>
+                    <span class="item-price">₹100</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Mutton Chukka</span>
+                    <span class="item-price">₹150</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Veg Menu -->
+        <div class="menu-card">
+            <div class="card-header">TODAY'S SPECIAL</div>
+            <span class="badge badge-veg">VEG</span>
+            <h2 class="menu-type-veg">🥗 Veg Menu</h2>
+            <div class="menu-list">
+                <div class="menu-item">
+                    <span class="item-name">Veg Biryani</span>
+                    <span class="item-price">₹120</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Veg Fried Rice</span>
+                    <span class="item-price">₹100</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Paneer Fried Rice</span>
+                    <span class="item-price">₹100</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Veg Noodles</span>
+                    <span class="item-price">₹100</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Gobi Manchurian</span>
+                    <span class="item-price">₹100</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Butter Naan</span>
+                    <span class="item-price">₹50</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Paneer Butter Masala</span>
+                    <span class="item-price">₹80</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dessert Menu -->
+        <div class="menu-card">
+            <div class="card-header">SWEET TREATS</div>
+            <span class="badge" style="background:rgba(243,156,18,0.15);color:#f39c12;border:1px solid rgba(243,156,18,0.3);">DESSERT</span>
+            <h2 style="background:-webkit-linear-gradient(45deg, #f39c12, #f1c40f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">🍰 Desserts</h2>
+            <div class="menu-list">
+                <div class="menu-item">
+                    <span class="item-name">Gulab Jamun</span>
+                    <span class="item-price">₹60</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Rasmalai</span>
+                    <span class="item-price">₹80</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Chocolate Brownie</span>
+                    <span class="item-price">₹100</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Vanilla Ice Cream</span>
+                    <span class="item-price">₹50</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Gajar Ka Halwa</span>
+                    <span class="item-price">₹90</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Juices Menu -->
+        <div class="menu-card">
+            <div class="card-header">REFRESHING BEVERAGES</div>
+            <span class="badge" style="background:rgba(52,152,219,0.15);color:#3498db;border:1px solid rgba(52,152,219,0.3);">DRINKS</span>
+            <h2 style="background:-webkit-linear-gradient(45deg, #3498db, #2980b9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">🍹 Fresh Juices</h2>
+            <div class="menu-list">
+                <div class="menu-item">
+                    <span class="item-name">Fresh Orange Juice</span>
+                    <span class="item-price">₹60</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Watermelon Juice</span>
+                    <span class="item-price">₹50</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Mango Shake</span>
+                    <span class="item-price">₹70</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Pineapple Juice</span>
+                    <span class="item-price">₹60</span>
+                </div>
+                <div class="menu-item">
+                    <span class="item-name">Lemon Mint Cooler</span>
+                    <span class="item-price">₹40</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order CTA -->
+    <div class="order-cta">
+        <a href="hello.html">🛒 Order Now →</a>
+    </div>
+
+    <div class="footer">
+        © 2026 AZ RESTAURANT • Fresh Food • Great Taste
+    </div>
+</body>
+</html>

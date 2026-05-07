@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AZ Restaurant - Payment</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="icon.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+body{
+    font-family:'Poppins', 'Segoe UI', sans-serif;
+    background:url("restaurant.jpg") center/cover no-repeat fixed;
+    min-height:100vh;
+    padding-bottom:40px;
+}
+body::before{
+    content:"";
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:linear-gradient(135deg, rgba(0,0,0,0.7), rgba(20,10,0,0.8));
+    z-index:0;
+}
+
+/* Title */
+.title{ text-align:center; padding-top:30px; position:relative; z-index:1; }
+.title h1{
+    font-size:48px; font-weight:700; letter-spacing:3px;
+    background:linear-gradient(45deg, #ff7b00, #ffcc00);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.title p{ color:#999; font-size:13px; letter-spacing:5px; margin-top:5px; text-transform:uppercase; }
+
+/* Navbar */
+.navbar{
+    position:relative; z-index:1; display:flex; justify-content:center;
+    margin:20px auto; width:fit-content; padding:14px 40px; border-radius:50px;
+    background:linear-gradient(45deg, #ff7b00, #ffcc00);
+    box-shadow:0 8px 32px rgba(255,123,0,0.3);
+}
+.navbar a{
+    text-decoration:none; color:#1a1a2e; font-size:16px; font-weight:600;
+    margin:0 25px; transition:all 0.3s ease; position:relative;
+}
+.navbar a:hover{ color:white; transform:scale(1.05); }
+.navbar a.active{ color:white; }
+.navbar a.active::after{
+    content:""; position:absolute; bottom:-6px; left:0;
+    width:100%; height:3px; background:white; border-radius:2px;
+}
+
+/* Main Layout */
+.main-layout{
+    position:relative; z-index:1; max-width:1050px;
+    margin:30px auto; padding:0 20px;
+    display:grid; grid-template-columns:1fr 320px; gap:25px;
+}
+
+/* Glass Card */
+.glass-card{
+    border-radius:25px; background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.1);
+    box-shadow:0 15px 40px rgba(0,0,0,0.3); padding:30px; color:white;
+}
+
+/* Address Step */
+.step-header{
+    display:flex; align-items:center; gap:12px;
+    padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:20px;
+}
+.step-num{
+    width:32px; height:32px; border-radius:50%;
+    background:linear-gradient(45deg, #ff7b00, #ffcc00);
+    display:flex; align-items:center; justify-content:center;
+    font-size:14px; font-weight:700; color:#1a1a2e; flex-shrink:0;
+}
+.step-title{ font-size:18px; font-weight:600; }
+.step-title span{
+    background:linear-gradient(45deg, #ff7b00, #ffcc00);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.change-link{
+    margin-left:auto; color:#ffcc00; font-size:13px; text-decoration:none;
+    transition:0.3s;
+}
+.change-link:hover{ color:#ff7b00; }
+.addr-name{ font-weight:600; font-size:15px; color:#ddd; }
+.addr-text{ font-size:13px; color:#888; margin-top:4px; }
+
+/* Payment Options */
+.pay-option{
+    border:1px solid rgba(255,255,255,0.1); border-radius:16px;
+    padding:16px 20px; margin-bottom:12px; cursor:pointer;
+    background:rgba(255,255,255,0.04); transition:all 0.3s ease;
+}
+.pay-option:hover{ background:rgba(255,255,255,0.08); }
+.pay-option.selected{
+    background:rgba(255,123,0,0.1); border-color:rgba(255,123,0,0.4);
+    box-shadow:0 0 20px rgba(255,123,0,0.1);
+}
+.pay-header{ display:flex; align-items:center; gap:12px; }
+.pay-header input[type="radio"]{ width:16px; height:16px; accent-color:#ff7b00; cursor:pointer; }
+.pay-header label{ font-weight:600; cursor:pointer; font-size:15px; color:#ddd; }
+.pay-header img{ height:18px; margin-left:auto; }
+.pay-desc{ color:#777; font-size:12px; margin-left:28px; margin-top:4px; }
+
+.pay-details{
+    margin-top:14px; margin-left:28px; display:none;
+    padding:18px; border-radius:14px;
+    background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08);
+}
+.pay-option.selected .pay-details{ display:block; }
+
+/* Input Fields */
+.input-field{
+    width:100%; max-width:280px; padding:10px 14px;
+    border:1px solid rgba(255,255,255,0.15); border-radius:10px;
+    background:rgba(255,255,255,0.06); color:white;
+    font-size:14px; font-family:'Poppins', sans-serif;
+    outline:none; transition:all 0.3s ease; margin-top:8px;
+}
+.input-field::placeholder{ color:#666; }
+.input-field:focus{ border-color:#ff7b00; box-shadow:0 0 15px rgba(255,123,0,0.15); }
+
+.field-label{ font-size:13px; font-weight:600; color:#ccc; margin-top:12px; }
+
+/* QR inline */
+.qr-inline-box{
+    display:flex; gap:20px; align-items:center;
+    background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
+    border-radius:14px; padding:18px; margin-bottom:14px;
+}
+.qr-inline-box img{ width:130px; height:auto; border-radius:10px; }
+.qr-info-title{ font-size:16px; font-weight:600; color:#ffcc00; margin-bottom:6px; }
+.qr-info-sub{ font-size:13px; color:#888; margin-bottom:12px; }
+.upi-logos{ display:flex; gap:10px; align-items:center; margin-bottom:12px; }
+.upi-logos img{ height:16px; filter:brightness(1.2); }
+
+/* Bank detail */
+.bank-detail{
+    background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
+    border-radius:12px; padding:14px; margin-bottom:12px;
+}
+.bank-detail div{ margin-bottom:6px; font-size:13px; color:#aaa; }
+.bank-detail strong{ color:#ffcc00; font-size:14px; }
+
+/* UPI ID box */
+.upi-id-box{
+    font-size:16px; font-weight:700; color:#ffcc00;
+    background:rgba(255,123,0,0.1); border:1px dashed rgba(255,123,0,0.4);
+    padding:10px 16px; border-radius:10px; display:inline-block; margin:10px 0;
+}
+
+/* Summary Box */
+.summary-box{ position:sticky; top:30px; }
+.summary-title{
+    font-size:20px; font-weight:600; margin-bottom:15px;
+    background:linear-gradient(45deg, #ff7b00, #ffcc00);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.summary-line{
+    display:flex; justify-content:space-between;
+    font-size:14px; color:#bbb; margin-bottom:8px;
+}
+.summary-total{
+    display:flex; justify-content:space-between;
+    font-size:20px; font-weight:700; color:#ffcc00;
+    margin-top:12px; padding-top:12px;
+    border-top:1px solid rgba(255,255,255,0.1);
+}
+
+.submit-btn{
+    width:100%; padding:14px; border:none; border-radius:14px;
+    background:linear-gradient(45deg, #ff7b00, #ffcc00);
+    color:#1a1a2e; font-size:16px; font-weight:700;
+    font-family:'Poppins', sans-serif; cursor:pointer;
+    transition:all 0.3s ease; letter-spacing:1px;
+    text-transform:uppercase; margin-bottom:12px;
+}
+.submit-btn:hover{ transform:translateY(-3px); box-shadow:0 10px 30px rgba(255,123,0,0.4); }
+.submit-btn:disabled{ opacity:0.4; cursor:not-allowed; transform:none; box-shadow:none; }
+
+.legal-text{ font-size:11px; color:#666; text-align:center; line-height:1.6; }
+.legal-text a{ color:#ffcc00; text-decoration:none; }
+
+/* Overlays */
+.overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,0.7);
+    backdrop-filter:blur(8px); z-index:999;
+    display:none; align-items:center; justify-content:center;
+}
+.overlay.show{ display:flex; }
+.pop{
+    background:rgba(30,30,40,0.95); backdrop-filter:blur(15px);
+    border:1px solid rgba(255,255,255,0.1); border-radius:25px;
+    padding:40px; max-width:450px; width:90%; text-align:center; color:white;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+.spin{
+    width:40px; height:40px; border:3px solid rgba(255,255,255,0.1);
+    border-top-color:#ff7b00; border-radius:50%;
+    animation:spin 1s linear infinite; margin:0 auto 15px;
+}
+@keyframes spin{ to{ transform:rotate(360deg); } }
+
+.pop h3{ font-size:20px; font-weight:600; margin-bottom:10px; }
+.pop h3.success-title{
+    background:linear-gradient(45deg, #ff7b00, #ffcc00);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+
+.info-note{
+    background:rgba(255,123,0,0.1); border:1px solid rgba(255,123,0,0.2);
+    color:#ffcc00; padding:12px 16px; border-radius:12px;
+    font-size:13px; margin:15px 0; text-align:left;
+}
+
+/* Responsive */
+@media (max-width:768px){
+    .main-layout{ grid-template-columns:1fr; }
+    .summary-box{ position:relative; top:0; order:-1; }
+    .navbar{ flex-wrap:wrap; gap:10px; padding:12px 20px; }
+    .navbar a{ margin:5px 12px; font-size:14px; }
+    .title h1{ font-size:32px; }
+    .qr-inline-box{ flex-direction:column; text-align:center; }
+}
+</style>
+</head>
+<body>
+
+<div class="title">
+    <h1>AZ RESTAURANT</h1>
+    <p>Delicious food, delivered fresh</p>
+</div>
+
+<div class="navbar">
+    <a href="home.html">HOME</a>
+    <a href="table.html">TABLE BOOKING</a>
+    <a href="takeaway.html">TAKE AWAY</a>
+    <a href="hello.html">ORDER ONLINE</a>
+</div>
+
+<div class="main-layout">
+  <!-- Left Column -->
+  <div>
+    <!-- Step 1: Address -->
+    <div class="glass-card" style="margin-bottom:25px;">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title"><span>Delivery Address</span></div>
+        <a href="takeaway.html" class="change-link">Change</a>
+      </div>
+      <div class="addr-name" id="addrN">Loading...</div>
+      <div class="addr-text" id="addrT">...</div>
+    </div>
+
+    <!-- Step 2: Payment -->
+    <div class="glass-card">
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <div class="step-title"><span>Payment Method</span></div>
+      </div>
+
+      <!-- QR Code -->
+      <div class="pay-option selected" id="opt-qr" onclick="selectPay('qr')">
+        <div class="pay-header">
+          <input type="radio" name="payment" id="r-qr" checked>
+          <label>Pay through UPI QR Code</label>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" alt="UPI">
+        </div>
+        <div class="pay-details" onclick="event.stopPropagation()">
+          <div class="qr-inline-box">
+            <img id="inline-qr-img" src="" alt="QR Code">
+            <div>
+              <div class="qr-info-title">Scan and Pay</div>
+              <div class="qr-info-sub">Scan the QR code using any UPI app</div>
+              <div class="upi-logos">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="GPay">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/7/71/PhonePe_Logo.svg" alt="PhonePe">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm">
+              </div>
+              <div style="font-size:13px; color:#888;">Click <strong style="color:#ffcc00;">Place Your Order</strong> after payment.</div>
+            </div>
+          </div>
+          <div class="field-label">UPI Transaction ID (12-digit UTR)</div>
+          <input type="text" id="txn-qr" class="input-field" placeholder="Enter Reference No." maxlength="20">
+        </div>
+      </div>
+
+      <!-- UPI ID -->
+      <div class="pay-option" id="opt-id" onclick="selectPay('id')">
+        <div class="pay-header">
+          <input type="radio" name="payment" id="r-id">
+          <label>Pay to UPI ID</label>
+        </div>
+        <div class="pay-desc">Pay manually to our verified VPA.</div>
+        <div class="pay-details" onclick="event.stopPropagation()">
+          <div style="font-size:13px; color:#aaa; margin-bottom:8px;">Our UPI ID:</div>
+          <div class="upi-id-box">ahamedkassale-2@okaxis</div>
+          <div style="font-size:12px; color:#777; margin-top:10px;">Place your order, then make the transfer. We will verify and process your food.</div>
+          <div class="field-label">UPI Transaction ID</div>
+          <input type="text" id="txn-id" class="input-field" placeholder="Enter Reference No." maxlength="20">
+        </div>
+      </div>
+
+      <!-- Bank Transfer -->
+      <div class="pay-option" id="opt-bank" onclick="selectPay('bank')">
+        <div class="pay-header">
+          <input type="radio" name="payment" id="r-bank">
+          <label>Direct Bank Transfer</label>
+        </div>
+        <div class="pay-desc">NEFT / RTGS / IMPS</div>
+        <div class="pay-details" onclick="event.stopPropagation()">
+          <div class="bank-detail">
+            <div>Account Name: <strong>AHAMED KASSALI S</strong></div>
+            <div>Account Number: <strong>000009688212526</strong></div>
+            <div>IFSC Code: <strong>CIUB0000441</strong></div>
+          </div>
+          <div style="font-size:12px; color:#777;">Place your order, then make the transfer. We will verify and process your food.</div>
+          <div class="field-label">Bank Reference / UTR No.</div>
+          <input type="text" id="txn-bank" class="input-field" placeholder="Enter Transaction Ref" maxlength="25">
+        </div>
+      </div>
+
+      <!-- COD -->
+      <div class="pay-option" id="opt-cod" onclick="selectPay('cod')">
+        <div class="pay-header">
+          <input type="radio" name="payment" id="r-cod">
+          <label>Pay on Delivery</label>
+        </div>
+        <div class="pay-desc">Pay digitally or in cash when your order arrives.</div>
+        <div class="pay-details" onclick="event.stopPropagation()">
+          <div style="font-size:13px; color:#2ecc71;">✅ Eligible for this order.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column: Summary -->
+  <div>
+    <div class="glass-card summary-box">
+      <div class="summary-title">💳 Order Summary</div>
+      <div class="summary-line"><span>Items:</span><span id="s-sub">₹0</span></div>
+      <div class="summary-line"><span>Delivery:</span><span>₹0</span></div>
+      <div class="summary-total"><span>Total:</span><span id="s-tot">₹0</span></div>
+      <button class="submit-btn" id="main-btn" onclick="executePayment()" style="margin-top:20px;">PLACE YOUR ORDER →</button>
+      <div class="legal-text">
+        By placing your order, you agree to AZ Restaurant's <a href="#">privacy notice</a> and <a href="#">conditions of use</a>.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Overlays -->
+<div class="overlay" id="overlay">
+  <!-- Processing -->
+  <div class="pop" id="pop-proc">
+    <div class="spin"></div>
+    <h3>Processing your order...</h3>
+    <p style="color:#888; font-size:14px;">Please do not refresh or close this page.</p>
+  </div>
+
+  <!-- Success -->
+  <div class="pop" id="pop-static" style="display:none;">
+    <h3 class="success-title" style="font-size:24px;">Payment Submitted! ⏳</h3>
+    <div style="font-size:15px; color:#ccc; margin:15px 0;">
+      Order Ref: <strong id="static-ref" style="color:#ffcc00; font-size:18px;">...</strong><br>
+      Amount: <strong id="static-amt" style="color:#ff7b00; font-size:20px;">...</strong>
+    </div>
+
+    <div id="static-qr-view" style="display:none;">
+      <p style="color:#888; font-size:13px;">Scan the QR code below to complete payment.</p>
+      <div style="background:white; padding:10px; display:inline-block; border-radius:12px; margin:15px 0;">
+        <img id="qr-img" src="" style="width:180px; height:180px; display:block;">
+      </div>
+    </div>
+
+    <div id="static-id-view" style="display:none; margin:20px 0;">
+      <p style="color:#888; font-size:13px; margin-bottom:8px;">Transfer the amount to our official UPI ID:</p>
+      <div class="upi-id-box">ahamedkassale-2@okaxis</div>
+    </div>
+
+    <div id="static-bank-view" style="display:none; margin:20px 0;">
+      <p style="color:#888; font-size:13px; margin-bottom:10px;">Transfer the amount to our official Bank Account:</p>
+      <div class="bank-detail">
+        <div>Name: <strong>AHAMED KASSALI S</strong></div>
+        <div>A/C Number: <strong>000009688212526</strong></div>
+        <div>IFSC Code: <strong>CIUB0000441</strong></div>
+      </div>
+    </div>
+
+    <div class="info-note" id="status-note">
+      <div id="waiting-spinner" style="display:inline-block; width:16px; height:16px; border:2px solid rgba(255,200,0,0.3); border-top-color:#ffcc00; border-radius:50%; animation:spin 1s linear infinite; vertical-align:middle; margin-right:8px;"></div>
+      ⏳ Your order is awaiting admin confirmation. Once we verify your payment, your order will be placed and preparation will begin.
+    </div>
+    <button class="submit-btn" id="action-btn" onclick="window.location.href='start.html'">RETURN TO HOME →</button>
+  </div>
+</div>
+
+<script>
+let OD = null;
+let selectedMethod = 'qr';
+let currentOrderRef = null;
+
+window.onload = () => {
+  const raw = localStorage.getItem('az_current_order');
+  if(!raw) { alert('No active order.'); window.location.href='start.html'; return; }
+  OD = JSON.parse(raw);
+
+  document.getElementById('s-sub').innerText = '₹' + OD.subtotal;
+  document.getElementById('s-tot').innerText = '₹' + OD.total;
+  document.getElementById('addrN').innerText = OD.address ? OD.address.split(',')[0] : 'Takeaway Customer';
+  document.getElementById('addrT').innerText = OD.address || 'Picking up at restaurant';
+
+  const upiLink = `upi://pay?pa=ahamedkassale-2@okaxis&pn=AZ+Restaurant&am=${OD.total}&cu=INR&tn=Food+Order`;
+  document.getElementById('inline-qr-img').src = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(upiLink);
+};
+
+function selectPay(method) {
+  selectedMethod = method;
+  document.querySelectorAll('.pay-option').forEach(el => el.classList.remove('selected'));
+  document.getElementById('opt-' + method).classList.add('selected');
+  document.getElementById('r-' + method).checked = true;
+
+  const btn = document.getElementById('main-btn');
+  if(method === 'cod') btn.innerText = 'PLACE YOUR ORDER →';
+  else btn.innerText = 'PLACE YOUR ORDER & PAY →';
+}
+
+function showOverlay(id) {
+  document.getElementById('overlay').classList.add('show');
+  ['pop-proc', 'pop-static'].forEach(pid => document.getElementById(pid).style.display = 'none');
+  document.getElementById(id).style.display = 'block';
+}
+
+async function executePayment() {
+  if (selectedMethod === 'qr' || selectedMethod === 'id' || selectedMethod === 'bank') {
+    let txnId = document.getElementById('txn-' + selectedMethod) ? document.getElementById('txn-' + selectedMethod).value.trim() : '';
+    if (!txnId) {
+      alert('Please enter your Transaction ID/UTR number after completing the payment.');
+      return;
+    }
+    await placeStaticOrder(selectedMethod, txnId);
+  } else if (selectedMethod === 'cod') {
+    await processCOD();
+  }
+}
+
+async function placeStaticOrder(type, txnId) {
+  showOverlay('pop-proc');
+  if (type === 'bank') {
+    OD.payment_method = 'Bank Transfer';
+    OD.transaction_id = txnId;
+  } else {
+    OD.payment_method = 'UPI';
+    OD.transaction_id = txnId;
+  }
+  OD.payment_status = 'Pending Admin Verification';
+
+  try {
+    const res = await fetch('/api/orders', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(OD)});
+    const result = await res.json();
+    if(!result.success) throw new Error(result.error);
+
+    localStorage.removeItem('az_current_order');
+    currentOrderRef = result.orderRef;
+    document.getElementById('static-ref').innerText = result.orderRef;
+    document.getElementById('static-amt').innerText = '₹' + OD.total;
+
+    document.getElementById('static-qr-view').style.display = 'none';
+    document.getElementById('static-id-view').style.display = 'none';
+    document.getElementById('static-bank-view').style.display = 'none';
+
+    showOverlay('pop-static');
+
+    // Start polling for admin confirmation
+    startPolling(result.orderRef);
+  } catch(e) {
+    document.getElementById('overlay').classList.remove('show');
+    alert('Error: ' + e.message);
+  }
+}
+
+// Poll server every 5 seconds to check if admin confirmed the order
+let pollInterval = null;
+
+function startPolling(orderRef) {
+  pollInterval = setInterval(async () => {
+    try {
+      const res = await fetch('/api/track/' + orderRef);
+      const data = await res.json();
+      if (data.success && data.order.status !== 'Awaiting Confirmation') {
+        clearInterval(pollInterval);
+        // Admin confirmed! Update the UI
+        document.querySelector('#pop-static .success-title').innerHTML = 'Order Confirmed! ✅';
+        
+        const note = document.getElementById('status-note');
+        note.style.background = 'rgba(46,204,113,0.1)';
+        note.style.borderColor = 'rgba(46,204,113,0.3)';
+        note.style.color = '#2ecc71';
+        note.innerHTML = '✅ Your payment has been verified and your order is now being prepared!';
+
+        const btn = document.getElementById('action-btn');
+        btn.innerText = '🛵 TRACK YOUR ORDER →';
+        btn.onclick = () => { window.location.href = 'track.html?ref=' + orderRef; };
+      }
+    } catch(e) { console.log('Polling error:', e); }
+  }, 5000);
+}
+
+async function processCOD() {
+  showOverlay('pop-proc');
+  OD.payment_method = 'Cash on Delivery';
+  OD.transaction_id = 'COD-PENDING';
+
+  try {
+    const res = await fetch('/api/orders', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(OD)});
+    const result = await res.json();
+    if(result.success) {
+      localStorage.removeItem('az_current_order');
+      window.location.href = 'end.html?ref=' + result.orderRef + '&type=order';
+    } else {
+      document.getElementById('overlay').classList.remove('show');
+      alert('Error: ' + result.error);
+    }
+  } catch(e) {
+    document.getElementById('overlay').classList.remove('show');
+    alert('Server error.');
+  }
+}
+</script>
+</body>
+</html>

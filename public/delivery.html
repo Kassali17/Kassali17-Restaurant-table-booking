@@ -1,0 +1,238 @@
+    <style>
+    :root {
+        --primary: #ff7b00;
+        --secondary: #ffcc00;
+        --dark-bg: #0a0a0a;
+        --glass: rgba(255, 255, 255, 0.08);
+        --glass-border: rgba(255, 255, 255, 0.1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: url("restaurant.jpg") center/cover no-repeat fixed;
+        color: white;
+    }
+
+    body::before {
+        content: "";
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 50% 50%, rgba(0,0,0,0.6), rgba(0,0,0,0.9));
+        z-index: 0;
+    }
+
+    .container {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 500px;
+        padding: 20px;
+        animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .title {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .title h1 {
+        font-size: 38px;
+        font-weight: 800;
+        letter-spacing: 3px;
+        background: linear-gradient(45deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .card {
+        background: var(--glass);
+        backdrop-filter: blur(15px);
+        border: 1px solid var(--glass-border);
+        border-radius: 30px;
+        padding: 40px;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    }
+
+    .card h2 {
+        font-size: 24px;
+        margin-bottom: 25px;
+        color: var(--secondary);
+        text-align: center;
+    }
+
+    .input-box {
+        margin-bottom: 20px;
+    }
+
+    .input-box label {
+        display: block;
+        font-size: 13px;
+        font-weight: 500;
+        color: #aaa;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .input-box input, .input-box select, .input-box textarea {
+        width: 100%;
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        color: white;
+        outline: none;
+        transition: 0.3s;
+        font-size: 14px;
+    }
+
+    .input-box input:focus, .input-box select:focus, .input-box textarea:focus {
+        border-color: var(--primary);
+        background: rgba(0,0,0,0.3);
+        box-shadow: 0 0 15px rgba(255, 123, 0, 0.2);
+    }
+
+    .btn {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 15px;
+        background: linear-gradient(45deg, var(--primary), var(--secondary));
+        color: #1a1a2e;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 10px;
+    }
+
+    .btn:hover {
+        transform: scale(1.02);
+        box-shadow: 0 10px 25px rgba(255, 123, 0, 0.4);
+    }
+
+    .footer-note {
+        text-align: center;
+        margin-top: 25px;
+        font-size: 12px;
+        color: #666;
+    }
+
+    .back-home {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: #888;
+        text-decoration: none;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+    .back-home:hover { color: var(--primary); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <h1>AZ RESTAURANT</h1>
+        </div>
+        <div class="card">
+            <h2>🚚 Quick Delivery</h2>
+            <form id="deliveryForm">
+                <div class="input-box">
+                    <label>Favorite Dish</label>
+                    <select id="foodItem" required>
+                        <option value="150">Chicken Biryani - ₹150</option>
+                        <option value="250">Mutton Biryani - ₹250</option>
+                        <option value="120">Veg Biryani - ₹120</option>
+                        <option value="80">Paneer Butter Masala - ₹80</option>
+                        <option value="100">Butter Chicken - ₹100</option>
+                    </select>
+                </div>
+                <div class="input-box">
+                    <label>Quantity</label>
+                    <input type="number" id="qty" value="1" min="1" max="10" required>
+                </div>
+                <div class="input-box">
+                    <label>📍 Delivery Address</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <input type="text" id="addrName" placeholder="Full Name" style="grid-column: span 2; width: 100%; min-width: 0;">
+                        <input type="text" id="addrPhone" placeholder="Mobile Number" style="width: 100%; min-width: 0;">
+                        <input type="text" id="addrPincode" placeholder="6-digit Pincode" style="width: 100%; min-width: 0;">
+                        <input type="text" id="addrFlat" placeholder="Flat, House no., Building" style="grid-column: span 2; width: 100%; min-width: 0;">
+                        <input type="text" id="addrArea" placeholder="Area, Street, Sector, Village" style="grid-column: span 2; width: 100%; min-width: 0;">
+                        <input type="text" id="addrLandmark" placeholder="Landmark (Optional)" style="width: 100%; min-width: 0;">
+                        <input type="text" id="addrCity" placeholder="Town/City" style="width: 100%; min-width: 0;">
+                    </div>
+                </div>
+                <button type="submit" class="btn" id="submitBtn">Proceed to Checkout →</button>
+            </form>
+            <div class="footer-note">
+                ⚡ Hot & Fresh delivery in 45 mins
+            </div>
+        </div>
+        <a href="home.html" class="back-home">← Back to Menu</a>
+    </div>
+
+    <script>
+        document.getElementById('deliveryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const foodSelect = document.getElementById('foodItem');
+            const price = parseInt(foodSelect.value);
+            const nameItem = foodSelect.options[foodSelect.selectedIndex].text.split(' - ')[0];
+            const qty = parseInt(document.getElementById('qty').value);
+            
+            // Collect Amazon Style Fields
+            const nameStr = document.getElementById('addrName').value.trim();
+            const phoneStr = document.getElementById('addrPhone').value.trim();
+            const pinStr = document.getElementById('addrPincode').value.trim();
+            const flatStr = document.getElementById('addrFlat').value.trim();
+            const areaStr = document.getElementById('addrArea').value.trim();
+            const landmarkStr = document.getElementById('addrLandmark').value.trim();
+            const cityStr = document.getElementById('addrCity').value.trim();
+
+            if (!nameStr || !phoneStr || pinStr.length !== 6 || !flatStr || !areaStr || !cityStr) {
+                return alert("Please fill in all address details correctly.");
+            }
+
+            const combinedAddress = `${nameStr} | ${phoneStr}\n${flatStr}, ${areaStr}\n${landmarkStr ? 'Landmark: '+landmarkStr+', ' : ''}${cityStr} - ${pinStr}`;
+
+
+            const orderData = {
+                order_type: 'Home Delivery',
+                pickup_time: 'ASAP',
+                address: combinedAddress,
+                subtotal: price * qty,
+                total: price * qty,
+                items: [{
+                    name: nameItem,
+                    price: price,
+                    qty: qty,
+                    itemTotal: price * qty
+                }]
+            };
+
+            // Save to localStorage for payment.html
+            localStorage.setItem("az_current_order", JSON.stringify(orderData));
+            
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = 'Redirecting...';
+            
+            setTimeout(() => {
+                window.location.href = "payment.html";
+            }, 800);
+        });
+    </script>
+</body>
+</html>

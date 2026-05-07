@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AZ Restaurant - Order Food</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Poppins', 'Segoe UI', sans-serif;
+    background-image:url("restaurant.jpg");
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+    min-height:100vh;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:linear-gradient(135deg, rgba(0,0,0,0.7), rgba(20,10,0,0.8));
+    z-index:0;
+}
+
+/* ===== TITLE ===== */
+
+.title{
+    text-align:center;
+    padding-top:30px;
+    color:white;
+    letter-spacing:3px;
+    position:relative;
+    z-index:1;
+}
+
+.title h1{
+    font-size:48px;
+    font-weight:700;
+    background:linear-gradient(45deg, #ff7b00, #ffcc00);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    text-shadow:none;
+}
+
+.title p{
+    color:#ccc;
+    font-size:14px;
+    letter-spacing:5px;
+    margin-top:5px;
+    text-transform:uppercase;
+}
+
+/* ===== NAVBAR ===== */
+
+.navbar{
+    position:relative;
+    z-index:1;
+    display:flex;
+    justify-content:center;
+    margin:20px auto;
+    width:fit-content;
+    padding:14px 40px;
+    border-radius:50px;
+    background:linear-gradient(45deg, #ff7b00, #ffcc00);
+    box-shadow:0 8px 32px rgba(255,123,0,0.3);
+}
+
+.navbar a{
+    text-decoration:none;
+    color:#1a1a2e;
+    font-size:16px;
+    font-weight:600;
+    margin:0 25px;
+    transition:all 0.3s ease;
+    position:relative;
+}
+
+.navbar a:hover{
+    color:white;
+    transform:scale(1.05);
+}
+
+.navbar a.active{
+    color:white;
+}
+
+.navbar a.active::after{
+    content:"";
+    position:absolute;
+    bottom:-6px;
+    left:0;
+    width:100%;
+    height:3px;
+    background:white;
+    border-radius:2px;
+}
+
+/* ===== MAIN LAYOUT ===== */
+
+.main-container{
+    position:relative;
+    z-index:1;
+    display:flex;
+    max-width:1200px;
+    margin:30px auto;
+    padding:0 20px;
+    gap:30px;
+}
+
+/* ===== FOOD MENU SECTION ===== */
+
+.food-menu{
+    flex:1;
+}
+
+.food-menu h2{
+    color:white;
+    font-size:26px;
+    margin-bottom:20px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.food-menu h2 span{
+    background:linear-gradient(45deg, #ff7b00, #ffcc00);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+}
+
+.food-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:20px;
+}
+
+/* ===== FOOD CARD ===== */
+
+.food-card{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(12px);
+    border-radius:20px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,0.1);
+    transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor:pointer;
+}
+
+.food-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 20px 40px rgba(255,123,0,0.2);
+    border-color:rgba(255,123,0,0.3);
+}
+
+.food-card-img{
+    width:100%;
+    height:180px;
+    overflow:hidden;
+    position:relative;
+}
+
+.food-card-img img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:transform 0.5s ease;
+}
+
+.food-card:hover .food-card-img img{
+    transform:scale(1.1);
+}
+
+.food-card-img .badge{
+    position:absolute;
+    top:12px;
+    right:12px;
+    background:linear-gradient(45deg, #ff7b00, #e63946);
+    color:white;
+    font-size:11px;
+    font-weight:600;
+    padding:4px 12px;
+    border-radius:20px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+}
+
+.food-card-img .veg-badge{
+    background:linear-gradient(45deg, #2ecc71, #27ae60);
+}
+
+.food-card-body{
+    padding:18px;
+}
+
+.food-card-body h3{
+    color:white;
+    font-size:17px;
+    font-weight:600;
+    margin-bottom:5px;
+}
+
+.food-card-body .food-desc{
+    color:#999;
+    font-size:12px;
+    margin-bottom:12px;
+    line-height:1.4;
+}
+
+.food-card-bottom{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.food-price{
+    color:#ffcc00;
+    font-size:22px;
+    font-weight:700;
+}
+
+.food-price small{
+    font-size:14px;
+    font-weight:400;
+    color:#999;
+}
+
+/* Quantity Controls */
+
+.qty-controls{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.qty-btn{
+    width:30px;
+    height:30px;
+    border:none;
+    border-radius:50%;
+    background:rgba(255,123,0,0.2);
+    color:#ff7b00;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:all 0.3s ease;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.qty-btn:hover{
+    background:#ff7b00;
+    color:white;
+}
+
+.qty-value{
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    min-width:20px;
+    text-align:center;
+}
+
+/* Add to Cart Button */
+
+.add-btn{
+    width:100%;
+    margin-top:14px;
+    padding:10px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(45deg, #ff7b00, #ffcc00);
+    color:#1a1a2e;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all 0.3s ease;
+    letter-spacing:0.5px;
+}
+
+.add-btn:hover{
+    transform:scale(1.03);
+    box-shadow:0 6px 20px rgba(255,123,0,0.4);
+}
+
+.add-btn:active{
+    transform:scale(0.97);
+}
+
+/* Add animation */
+@keyframes cartPop{
+    0%{ transform:scale(1); }
+    50%{ transform:scale(1.15); }
+    100%{ transform:scale(1); }
+}
+
+.add-btn.added{
+    background:linear-gradient(45deg, #2ecc71, #27ae60);
+    color:white;
+    animation:cartPop 0.4s ease;
+}
+
+/* ===== CART SECTION ===== */
+
+.cart-section{
+    width:360px;
+    position:sticky;
+    top:20px;
+    align-self:flex-start;
+}
+
+.cart-card{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(15px);
+    padding:28px;
+    border-radius:25px;
+    border:1px solid rgba(255,255,255,0.1);
+    box-shadow:0 15px 40px rgba(0,0,0,0.3);
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #ff7b00 transparent;
+}
+
+.cart-card::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cart-card::-webkit-scrollbar-thumb {
+    background: #ff7b00;
+    border-radius: 10px;
+}
+
+.cart-card::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.cart-card h2{
+    color:white;
+    font-size:22px;
+    margin-bottom:20px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.cart-empty{
+    text-align:center;
+    padding:30px 0;
+    color:#666;
+    font-size:14px;
+}
+
+.cart-empty .empty-icon{
+    font-size:50px;
+    margin-bottom:10px;
+    opacity:0.5;
+}
+
+/* Cart Item */
+
+.cart-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 0;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    animation:slideIn 0.3s ease;
+}
+
+@keyframes slideIn{
+    from{
+        opacity:0;
+        transform:translateX(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateX(0);
+    }
+}
+
+.cart-item-info{
+    flex:1;
+}
+
+.cart-item-name{
+    color:white;
+    font-size:14px;
+    font-weight:500;
+}
+
+.cart-item-meta{
+    color:#999;
+    font-size:12px;
+    margin-top:3px;
+}
+
+.cart-item-price{
+    color:#ffcc00;
+    font-weight:600;
+    font-size:15px;
+    margin:0 15px;
+    min-width:60px;
+    text-align:right;
+}
+
+.remove-btn{
+    background:rgba(231,76,60,0.15);
+    color:#e74c3c;
+    border:none;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:14px;
+    transition:all 0.3s ease;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.remove-btn:hover{
+    background:#e74c3c;
+    color:white;
+    transform:scale(1.1);
+}
+
+/* Cart Totals */
+
+.cart-divider{
+    height:1px;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    margin:15px 0;
+}
+
+.cart-subtotal{
+    display:flex;
+    justify-content:space-between;
+    color:#999;
+    font-size:14px;
+    margin-bottom:8px;
+}
+
+.cart-total{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:10px;
+}
+
+.cart-total span:first-child{
+    color:white;
+    font-size:18px;
+    font-weight:600;
+}
+
+.cart-total span:last-child{
+    color:#ffcc00;
+    font-size:26px;
+    font-weight:700;
+}
+
+/* Place Order Button */
+
+.order-btn{
+    width:100%;
+    margin-top:20px;
+    padding:14px;
+    border:none;
+    border-radius:15px;
+    background:linear-gradient(45deg, #ff7b00, #ffcc00);
+    color:#1a1a2e;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:all 0.3s ease;
+    letter-spacing:1px;
+    text-transform:uppercase;
+}
+
+.order-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 30px rgba(255,123,0,0.4);
+}
+
+.order-btn:active{
+    transform:translateY(0);
+}
+
+.order-btn:disabled{
+    opacity:0.4;
+    cursor:not-allowed;
+    transform:none;
+    box-shadow:none;
+}
+
+/* Cart Count Badge */
+.cart-count{
+    background:#e74c3c;
+    color:white;
+    font-size:12px;
+    font-weight:700;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    margin-left:5px;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width:1024px){
+    .main-container{
+        flex-direction:column;
+    }
+    .cart-section{
+        width:100%;
+        position:relative;
+    }
+}
+
+@media (max-width:600px){
+    .food-grid{
+        grid-template-columns:1fr;
+    }
+    .navbar{
+        flex-wrap:wrap;
+        gap:10px;
+        padding:12px 20px;
+    }
+    .navbar a{
+        margin:5px 12px;
+        font-size:14px;
+    }
+    .title h1{
+        font-size:32px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="title">
+<h1>AZ RESTAURANT</h1>
+<p>Delicious food, delivered fresh</p>
+</div>
+
+<div class="navbar">
+<a href="home.html">HOME</a>
+<a href="table.html">TABLE BOOKING</a>
+<a href="takeaway.html">TAKE AWAY</a>
+<a href="hello.html" class="active">ORDER ONLINE</a>
+</div>
+
+<!-- MAIN LAYOUT -->
+
+<div class="main-container">
+
+<!-- FOOD MENU -->
+
+<div class="food-menu">
+<h2>🍽️ <span>Our Menu</span></h2>
+
+<div class="food-grid">
+
+<!-- Card 1: Chicken Biryani -->
+<div class="food-card" id="food-1">
+    <div class="food-card-img">
+        <img src="images/chicken_biryani.jpg" alt="Chicken Biryani">
+        <div class="badge">BESTSELLER</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Chicken Biryani</h3>
+        <p class="food-desc">Fragrant basmati rice layered with tender spiced chicken, topped with fried onions & fresh mint</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹150 <small>/plate</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-1', -1)">−</button>
+                <span class="qty-value" id="qty-food-1">1</span>
+                <button class="qty-btn" onclick="changeQty('food-1', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Chicken Biryani', 150, 'food-1')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 2: Mutton Biryani -->
+<div class="food-card" id="food-2">
+    <div class="food-card-img">
+        <img src="images/mutton_biryani.jpg" alt="Mutton Biryani">
+        <div class="badge">PREMIUM</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Mutton Biryani</h3>
+        <p class="food-desc">Aromatic rice with succulent mutton pieces cooked on bone, infused with saffron & spices</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹250 <small>/plate</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-2', -1)">−</button>
+                <span class="qty-value" id="qty-food-2">1</span>
+                <button class="qty-btn" onclick="changeQty('food-2', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Mutton Biryani', 250, 'food-2')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 3: Chicken Fried Rice -->
+<div class="food-card" id="food-3">
+    <div class="food-card-img">
+        <img src="images/chicken_fried_rice.jpg" alt="Chicken Fried Rice">
+    </div>
+    <div class="food-card-body">
+        <h3>Chicken Fried Rice</h3>
+        <p class="food-desc">Wok-tossed rice with seasoned chicken, fresh vegetables & aromatic soy sauce</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹120 <small>/plate</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-3', -1)">−</button>
+                <span class="qty-value" id="qty-food-3">1</span>
+                <button class="qty-btn" onclick="changeQty('food-3', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Chicken Fried Rice', 120, 'food-3')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 4: Veg Biryani -->
+<div class="food-card" id="food-4">
+    <div class="food-card-img">
+        <img src="images/veg_biryani.jpg" alt="Veg Biryani">
+        <div class="badge veg-badge">VEG</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Veg Biryani</h3>
+        <p class="food-desc">Aromatic basmati rice with garden-fresh vegetables, paneer cubes & traditional spices</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹120 <small>/plate</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-4', -1)">−</button>
+                <span class="qty-value" id="qty-food-4">1</span>
+                <button class="qty-btn" onclick="changeQty('food-4', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Veg Biryani', 120, 'food-4')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 5: Paneer Butter Masala -->
+<div class="food-card" id="food-5">
+    <div class="food-card-img">
+        <img src="images/paneer_butter_masala.jpg" alt="Paneer Butter Masala">
+        <div class="badge veg-badge">VEG</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Paneer Butter Masala</h3>
+        <p class="food-desc">Soft paneer cubes in rich, creamy tomato-butter gravy with aromatic Indian spices</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹80 <small>/plate</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-5', -1)">−</button>
+                <span class="qty-value" id="qty-food-5">1</span>
+                <button class="qty-btn" onclick="changeQty('food-5', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Paneer Butter Masala', 80, 'food-5')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 6: Butter Naan -->
+<div class="food-card" id="food-6">
+    <div class="food-card-img">
+        <img src="images/butter_naan.jpg" alt="Butter Naan">
+        <div class="badge veg-badge">VEG</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Butter Naan</h3>
+        <p class="food-desc">Soft, fluffy naan bread baked in tandoor oven, brushed generously with melted butter</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹50 <small>/piece</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-6', -1)">−</button>
+                <span class="qty-value" id="qty-food-6">1</span>
+                <button class="qty-btn" onclick="changeQty('food-6', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Butter Naan', 50, 'food-6')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 7: Chicken Noodles -->
+<div class="food-card" id="food-7">
+    <div class="food-card-img">
+        <img src="images/chicken_noodles.jpg" alt="Chicken Noodles">
+    </div>
+    <div class="food-card-body">
+        <h3>Chicken Noodles</h3>
+        <p class="food-desc">Wok-tossed Hakka noodles with seasoned chicken, fresh vegetables & delicious sauces</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹120 <small>/plate</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-7', -1)">−</button>
+                <span class="qty-value" id="qty-food-7">1</span>
+                <button class="qty-btn" onclick="changeQty('food-7', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Chicken Noodles', 120, 'food-7')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 8: Chicken Manchurian -->
+<div class="food-card" id="food-8">
+    <div class="food-card-img">
+        <img src="images/chicken_manchurian.jpg" alt="Chicken Manchurian">
+    </div>
+    <div class="food-card-body">
+        <h3>Chicken Manchurian</h3>
+        <p class="food-desc">Crispy fried chicken pieces tossed in a sweet, tangy, and slightly spicy Manchurian sauce</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹100 <small>/plate</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-8', -1)">−</button>
+                <span class="qty-value" id="qty-food-8">1</span>
+                <button class="qty-btn" onclick="changeQty('food-8', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Chicken Manchurian', 100, 'food-8')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 9: Butter Chicken -->
+<div class="food-card" id="food-9">
+    <div class="food-card-img">
+        <img src="images/butter_chicken.jpg" alt="Butter Chicken">
+        <div class="badge">POPULAR</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Butter Chicken</h3>
+        <p class="food-desc">Tandoori chicken pieces cooked in a smooth, buttery, and rich tomato gravy</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹100 <small>/plate</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-9', -1)">−</button>
+                <span class="qty-value" id="qty-food-9">1</span>
+                <button class="qty-btn" onclick="changeQty('food-9', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Butter Chicken', 100, 'food-9')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 10: Chicken Tikka -->
+<div class="food-card" id="food-10">
+    <div class="food-card-img">
+        <img src="images/chicken_tikka.jpg" alt="Chicken Tikka">
+    </div>
+    <div class="food-card-body">
+        <h3>Chicken Tikka</h3>
+        <p class="food-desc">Boneless chicken chunks marinated in spices and yogurt, grilled to perfection in a tandoor</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹100 <small>/plate</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-10', -1)">−</button>
+                <span class="qty-value" id="qty-food-10">1</span>
+                <button class="qty-btn" onclick="changeQty('food-10', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Chicken Tikka', 100, 'food-10')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 11: Mutton Chukka -->
+<div class="food-card" id="food-11">
+    <div class="food-card-img">
+        <img src="images/mutton_chukka.jpg" alt="Mutton Chukka">
+    </div>
+    <div class="food-card-body">
+        <h3>Mutton Chukka</h3>
+        <p class="food-desc">Spicy and flavorful dry mutton roast loaded with South Indian spices and curry leaves</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹150 <small>/plate</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-11', -1)">−</button>
+                <span class="qty-value" id="qty-food-11">1</span>
+                <button class="qty-btn" onclick="changeQty('food-11', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Mutton Chukka', 150, 'food-11')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 12: Veg Fried Rice -->
+<div class="food-card" id="food-12">
+    <div class="food-card-img">
+        <img src="images/veg_fried_rice.jpg" alt="Veg Fried Rice">
+        <div class="badge veg-badge">VEG</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Veg Fried Rice</h3>
+        <p class="food-desc">Flavorful Chinese-style fried rice loaded with finely chopped fresh vegetables</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹100 <small>/plate</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-12', -1)">−</button>
+                <span class="qty-value" id="qty-food-12">1</span>
+                <button class="qty-btn" onclick="changeQty('food-12', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Veg Fried Rice', 100, 'food-12')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 13: Paneer Fried Rice -->
+<div class="food-card" id="food-13">
+    <div class="food-card-img">
+        <img src="images/paneer_fried_rice.jpg" alt="Paneer Fried Rice">
+        <div class="badge veg-badge">VEG</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Paneer Fried Rice</h3>
+        <p class="food-desc">Stir-fried rice tossed with colorful veggies, soft paneer cubes, and savory sauces</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹100 <small>/plate</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-13', -1)">−</button>
+                <span class="qty-value" id="qty-food-13">1</span>
+                <button class="qty-btn" onclick="changeQty('food-13', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Paneer Fried Rice', 100, 'food-13')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 14: Veg Noodles -->
+<div class="food-card" id="food-14">
+    <div class="food-card-img">
+        <img src="images/veg_noodles.jpg" alt="Veg Noodles">
+        <div class="badge veg-badge">VEG</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Veg Noodles</h3>
+        <p class="food-desc">Stir-fried Hakka noodles with crunchy cabbage, bell peppers, carrots, and spring onions</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹100 <small>/plate</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-14', -1)">−</button>
+                <span class="qty-value" id="qty-food-14">1</span>
+                <button class="qty-btn" onclick="changeQty('food-14', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Veg Noodles', 100, 'food-14')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 15: Gobi Manchurian -->
+<div class="food-card" id="food-15">
+    <div class="food-card-img">
+        <img src="images/gobi_manchurian.jpg" alt="Gobi Manchurian">
+        <div class="badge veg-badge">VEG</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Gobi Manchurian</h3>
+        <p class="food-desc">Deep-fried cauliflower florets tossed in a deliciously sweet and spicy Indo-Chinese sauce</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹100 <small>/plate</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-15', -1)">−</button>
+                <span class="qty-value" id="qty-food-15">1</span>
+                <button class="qty-btn" onclick="changeQty('food-15', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Gobi Manchurian', 100, 'food-15')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 16: Gulab Jamun -->
+<div class="food-card" id="food-16">
+    <div class="food-card-img">
+        <img src="images/gulab_jamun.jpg" alt="Gulab Jamun">
+        <div class="badge" style="background:#f39c12;">SWEET</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Gulab Jamun</h3>
+        <p class="food-desc">Soft, melt-in-your-mouth fried milk dumplings soaked in cardamom and rose sugar syrup</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹60 <small>/piece</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-16', -1)">−</button>
+                <span class="qty-value" id="qty-food-16">1</span>
+                <button class="qty-btn" onclick="changeQty('food-16', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Gulab Jamun', 60, 'food-16')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 17: Rasmalai -->
+<div class="food-card" id="food-17">
+    <div class="food-card-img">
+        <img src="images/rasmalai.jpg" alt="Rasmalai">
+        <div class="badge" style="background:#f39c12;">SWEET</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Rasmalai</h3>
+        <p class="food-desc">Rich and velvety soft fresh paneer discs immersed in chilled creamy saffron milk</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹80 <small>/piece</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-17', -1)">−</button>
+                <span class="qty-value" id="qty-food-17">1</span>
+                <button class="qty-btn" onclick="changeQty('food-17', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Rasmalai', 80, 'food-17')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 18: Chocolate Brownie -->
+<div class="food-card" id="food-18">
+    <div class="food-card-img">
+        <img src="images/chocolate_brownie.jpg" alt="Chocolate Brownie">
+        <div class="badge" style="background:#f39c12;">SWEET</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Chocolate Brownie</h3>
+        <p class="food-desc">Warm, fudgy chocolate brownie topped with chocolate syrup, perfect for ending your meal</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹100 <small>/piece</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-18', -1)">−</button>
+                <span class="qty-value" id="qty-food-18">1</span>
+                <button class="qty-btn" onclick="changeQty('food-18', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Chocolate Brownie', 100, 'food-18')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 19: Vanilla Ice Cream -->
+<div class="food-card" id="food-19">
+    <div class="food-card-img">
+        <img src="images/vanilla_ice_cream.jpg" alt="Vanilla Ice Cream">
+        <div class="badge" style="background:#f39c12;">SWEET</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Vanilla Ice Cream</h3>
+        <p class="food-desc">Classic creamy vanilla ice cream, perfectly simple and refreshing</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹50 <small>/scoop</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-19', -1)">−</button>
+                <span class="qty-value" id="qty-food-19">1</span>
+                <button class="qty-btn" onclick="changeQty('food-19', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Vanilla Ice Cream', 50, 'food-19')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 20: Gajar Ka Halwa -->
+<div class="food-card" id="food-20">
+    <div class="food-card-img">
+        <img src="images/gajar_ka_halwa.jpg" alt="Gajar Ka Halwa">
+        <div class="badge" style="background:#f39c12;">SWEET</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Gajar Ka Halwa</h3>
+        <p class="food-desc">Traditional warm Indian dessert made with fresh carrots, milk, sugar, and rich dry fruits</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹90 <small>/plate</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-20', -1)">−</button>
+                <span class="qty-value" id="qty-food-20">1</span>
+                <button class="qty-btn" onclick="changeQty('food-20', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Gajar Ka Halwa', 90, 'food-20')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 21: Fresh Orange Juice -->
+<div class="food-card" id="food-21">
+    <div class="food-card-img">
+        <img src="images/orange_juice.jpg" alt="Fresh Orange Juice">
+        <div class="badge" style="background:#3498db;">DRINK</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Fresh Orange Juice</h3>
+        <p class="food-desc">Freshly squeezed juicy sweet oranges bursting with Vitamin C</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹60 <small>/glass</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-21', -1)">−</button>
+                <span class="qty-value" id="qty-food-21">1</span>
+                <button class="qty-btn" onclick="changeQty('food-21', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Fresh Orange Juice', 60, 'food-21')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 22: Watermelon Juice -->
+<div class="food-card" id="food-22">
+    <div class="food-card-img">
+        <img src="images/watermelon_juice.jpg" alt="Watermelon Juice">
+        <div class="badge" style="background:#3498db;">DRINK</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Watermelon Juice</h3>
+        <p class="food-desc">Refreshing and hydrating sweet watermelon juice perfect for summer</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹50 <small>/glass</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-22', -1)">−</button>
+                <span class="qty-value" id="qty-food-22">1</span>
+                <button class="qty-btn" onclick="changeQty('food-22', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Watermelon Juice', 50, 'food-22')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 23: Mango Shake -->
+<div class="food-card" id="food-23">
+    <div class="food-card-img">
+        <img src="images/mango_shake.jpg" alt="Mango Shake">
+        <div class="badge" style="background:#3498db;">DRINK</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Mango Shake</h3>
+        <p class="food-desc">Thick and creamy mango milkshake made with premium ripe Alphonso mangoes</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹70 <small>/glass</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-23', -1)">−</button>
+                <span class="qty-value" id="qty-food-23">1</span>
+                <button class="qty-btn" onclick="changeQty('food-23', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Mango Shake', 70, 'food-23')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 24: Pineapple Juice -->
+<div class="food-card" id="food-24">
+    <div class="food-card-img">
+        <img src="images/pineapple_juice.jpg" alt="Pineapple Juice">
+        <div class="badge" style="background:#3498db;">DRINK</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Pineapple Juice</h3>
+        <p class="food-desc">Tart and sweet tropical pineapple juice, completely pure and refreshing</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹60 <small>/glass</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-24', -1)">−</button>
+                <span class="qty-value" id="qty-food-24">1</span>
+                <button class="qty-btn" onclick="changeQty('food-24', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Pineapple Juice', 60, 'food-24')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+<!-- Card 25: Lemon Mint Cooler -->
+<div class="food-card" id="food-25">
+    <div class="food-card-img">
+        <img src="images/lemon_mint_cooler.jpg" alt="Lemon Mint Cooler">
+        <div class="badge" style="background:#3498db;">DRINK</div>
+    </div>
+    <div class="food-card-body">
+        <h3>Lemon Mint Cooler</h3>
+        <p class="food-desc">Tangy lemon juice mixed with fresh cooling mint leaves and crushed ice</p>
+        <div class="food-card-bottom">
+            <div class="food-price">₹40 <small>/glass</small></div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('food-25', -1)">−</button>
+                <span class="qty-value" id="qty-food-25">1</span>
+                <button class="qty-btn" onclick="changeQty('food-25', 1)">+</button>
+            </div>
+        </div>
+        <button class="add-btn" onclick="addToCart('Lemon Mint Cooler', 40, 'food-25')">
+            🛒 Add to Cart
+        </button>
+    </div>
+</div>
+
+</div>
+</div>
+
+<!-- CART SIDEBAR -->
+
+<div class="cart-section">
+<div class="cart-card">
+
+<h2>🛒 Your Cart <span class="cart-count" id="cartCount">0</span></h2>
+
+<div id="cartItems">
+    <div class="cart-empty">
+        <div class="empty-icon">🍽️</div>
+        <p>Your cart is empty</p>
+        <p>Add some delicious food!</p>
+    </div>
+</div>
+
+<div id="cartFooter" style="display:none;">
+    <div class="cart-divider"></div>
+
+    <div class="cart-subtotal">
+        <span>Subtotal</span>
+        <span>₹<span id="subtotal">0</span></span>
+    </div>
+    <div class="cart-subtotal">
+        <span>Delivery Fee</span>
+        <span style="color:#2ecc71;">FREE</span>
+    </div>
+
+    <div class="cart-divider"></div>
+
+    <div class="cart-total">
+        <span>Total</span>
+        <span>₹<span id="total">0</span></span>
+    </div>
+
+    <div style="margin-top:20px; text-align: left;">
+        <label style="color:#ffcc00; font-size:14px; font-weight:600; display:block; margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">📍 Delivery Address</label>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+            <input type="text" id="addrName" placeholder="Full Name" style="grid-column: span 2; width: 100%; min-width: 0; padding:10px; border:1px solid rgba(255,255,255,0.15); border-radius:8px; background:rgba(255,255,255,0.06); color:white; outline:none;">
+            <input type="text" id="addrPhone" placeholder="Mobile Number" style="width: 100%; min-width: 0; padding:10px; border:1px solid rgba(255,255,255,0.15); border-radius:8px; background:rgba(255,255,255,0.06); color:white; outline:none;">
+            <input type="text" id="addrPincode" placeholder="6-digit Pincode" style="width: 100%; min-width: 0; padding:10px; border:1px solid rgba(255,255,255,0.15); border-radius:8px; background:rgba(255,255,255,0.06); color:white; outline:none;">
+            <input type="text" id="addrFlat" placeholder="Flat, House no., Building" style="grid-column: span 2; width: 100%; min-width: 0; padding:10px; border:1px solid rgba(255,255,255,0.15); border-radius:8px; background:rgba(255,255,255,0.06); color:white; outline:none;">
+            <input type="text" id="addrArea" placeholder="Area, Street, Sector, Village" style="grid-column: span 2; width: 100%; min-width: 0; padding:10px; border:1px solid rgba(255,255,255,0.15); border-radius:8px; background:rgba(255,255,255,0.06); color:white; outline:none;">
+            <input type="text" id="addrLandmark" placeholder="Landmark (Optional)" style="width: 100%; min-width: 0; padding:10px; border:1px solid rgba(255,255,255,0.15); border-radius:8px; background:rgba(255,255,255,0.06); color:white; outline:none;">
+            <input type="text" id="addrCity" placeholder="Town/City" style="width: 100%; min-width: 0; padding:10px; border:1px solid rgba(255,255,255,0.15); border-radius:8px; background:rgba(255,255,255,0.06); color:white; outline:none;">
+        </div>
+    </div>
+
+    <button class="order-btn" id="placeOrderBtn" onclick="submitOrder()">
+        Proceed to Payment →
+    </button>
+</div>
+
+</div>
+</div>
+
+</div>
+
+<!-- JAVASCRIPT -->
+
+<script>
+
+let cart = [];
+
+// ... [existing logic unchanged] ...
+
+// Change quantity on food card
+function changeQty(cardId, change){
+    let qtyEl = document.getElementById('qty-' + cardId);
+    let current = parseInt(qtyEl.innerText);
+    let newQty = current + change;
+    if(newQty < 1) newQty = 1;
+    if(newQty > 20) newQty = 20;
+    qtyEl.innerText = newQty;
+}
+
+// Add item to cart
+function addToCart(name, price, cardId){
+
+    let qty = parseInt(
+        document.getElementById('qty-' + cardId).innerText
+    );
+
+    let existing = cart.find(item => item.name === name);
+
+    if(existing){
+        existing.qty += qty;
+        existing.itemTotal = existing.price * existing.qty;
+    } else {
+        cart.push({
+            name: name,
+            price: price,
+            qty: qty,
+            itemTotal: price * qty
+        });
+    }
+
+    let btn = document.querySelector('#' + cardId + ' .add-btn');
+    btn.classList.add('added');
+    btn.innerHTML = '✅ Added!';
+    setTimeout(() => {
+        btn.classList.remove('added');
+        btn.innerHTML = '🛒 Add to Cart';
+    }, 1200);
+
+    document.getElementById('qty-' + cardId).innerText = '1';
+
+    updateCart();
+}
+
+// Update cart display
+function updateCart(){
+
+    let cartDiv = document.getElementById("cartItems");
+    let cartFooter = document.getElementById("cartFooter");
+    let cartCount = document.getElementById("cartCount");
+
+    if(cart.length === 0){
+        cartDiv.innerHTML = `
+            <div class="cart-empty">
+                <div class="empty-icon">🍽️</div>
+                <p>Your cart is empty</p>
+                <p>Add some delicious food!</p>
+            </div>
+        `;
+        cartFooter.style.display = "none";
+        cartCount.innerText = "0";
+        return;
+    }
+
+    cartDiv.innerHTML = "";
+    let total = 0;
+    let totalItems = 0;
+
+    cart.forEach((item, index) => {
+        total += item.itemTotal;
+        totalItems += item.qty;
+
+        cartDiv.innerHTML += `
+            <div class="cart-item">
+                <div class="cart-item-info">
+                    <div class="cart-item-name">${item.name}</div>
+                    <div class="cart-item-meta">${item.qty} × ₹${item.price}</div>
+                </div>
+                <div class="cart-item-price">₹${item.itemTotal}</div>
+                <button class="remove-btn" onclick="removeItem(${index})" title="Remove">✕</button>
+            </div>
+        `;
+    });
+
+    document.getElementById("subtotal").innerText = total;
+    document.getElementById("total").innerText = total;
+    cartCount.innerText = totalItems;
+    cartFooter.style.display = "block";
+}
+
+function removeItem(index){
+    cart.splice(index, 1);
+    updateCart();
+}
+
+async function submitOrder() {
+    if (cart.length === 0) return;
+
+    // Amazon-Style Field Collection
+    const name = document.getElementById('addrName').value.trim();
+    const phone = document.getElementById('addrPhone').value.trim();
+    const pincode = document.getElementById('addrPincode').value.trim();
+    const flat = document.getElementById('addrFlat').value.trim();
+    const area = document.getElementById('addrArea').value.trim();
+    const landmark = document.getElementById('addrLandmark').value.trim();
+    const city = document.getElementById('addrCity').value.trim();
+
+    // Validations
+    if (!name) return alert("Please enter Full Name.");
+    if (phone.length < 10) return alert("Please enter a valid Mobile Number.");
+    if (pincode.length !== 6 || isNaN(pincode)) return alert("Please enter a valid 6-digit Pincode.");
+    if (!flat || !area || !city) return alert("Please fill in the complete address details.");
+
+    // Combine into one string for backend
+    const combinedAddress = `${name} | ${phone}\n${flat}, ${area}\n${landmark ? 'Landmark: '+landmark+', ' : ''}${city} - ${pincode}`;
+
+    const btn = document.getElementById('placeOrderBtn');
+    btn.innerHTML = 'Prepping...';
+    btn.disabled = true;
+
+    const orderData = {
+        order_type: 'Online Delivery',
+        pickup_time: 'ASAP',
+        address: combinedAddress,
+        subtotal: document.getElementById('subtotal').innerText,
+        total: document.getElementById('total').innerText,
+        items: cart
+    };
+
+    localStorage.setItem("az_current_order", JSON.stringify(orderData));
+    
+    // Redirect to the new payment page
+    window.location.href = "payment.html";
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AZ Restaurant - Order Confirmed</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="icon.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+    }
+
+    body{
+        font-family:'Poppins', 'Segoe UI', sans-serif;
+        height:100vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        background:url("restaurant.jpg") center/cover no-repeat;
+        overflow:hidden;
+    }
+
+    body::before{
+        content:"";
+        position:fixed;
+        width:100%;
+        height:100%;
+        background:linear-gradient(135deg, rgba(0,0,0,0.75), rgba(20,10,0,0.85));
+        z-index:0;
+    }
+
+    /* Confetti Particles */
+    .confetti{
+        position:fixed;
+        z-index:0;
+    }
+
+    .confetti span{
+        position:fixed;
+        width:10px;
+        height:10px;
+        border-radius:50%;
+        animation:confettiFall linear infinite;
+        opacity:0.7;
+    }
+
+    .confetti span:nth-child(1){ left:10%; width:12px; height:12px; background:#ff7b00; animation-duration:3.5s; animation-delay:0s; }
+    .confetti span:nth-child(2){ left:25%; width:8px; height:8px; background:#ffcc00; animation-duration:4s; animation-delay:0.5s; }
+    .confetti span:nth-child(3){ left:40%; width:14px; height:14px; background:#2ecc71; animation-duration:3s; animation-delay:1s; }
+    .confetti span:nth-child(4){ left:55%; width:10px; height:10px; background:#e74c3c; animation-duration:4.5s; animation-delay:0.3s; }
+    .confetti span:nth-child(5){ left:70%; width:8px; height:8px; background:#ff7b00; animation-duration:3.2s; animation-delay:0.8s; }
+    .confetti span:nth-child(6){ left:85%; width:12px; height:12px; background:#ffcc00; animation-duration:3.8s; animation-delay:0.2s; }
+    .confetti span:nth-child(7){ left:15%; width:6px; height:6px; background:#2ecc71; animation-duration:4.2s; animation-delay:1.2s; }
+    .confetti span:nth-child(8){ left:50%; width:10px; height:10px; background:#e74c3c; animation-duration:3.6s; animation-delay:0.6s; }
+    .confetti span:nth-child(9){ left:80%; width:14px; height:14px; background:#ff7b00; animation-duration:4s; animation-delay:1.5s; }
+    .confetti span:nth-child(10){ left:35%; width:8px; height:8px; background:#ffcc00; animation-duration:3.3s; animation-delay:0.4s; }
+
+    @keyframes confettiFall{
+        0%{ top:-10%; transform:rotate(0deg) translateX(0); opacity:1; }
+        100%{ top:110%; transform:rotate(720deg) translateX(80px); opacity:0; }
+    }
+
+    /* Card */
+    .card{
+        position:relative;
+        z-index:1;
+        text-align:center;
+        padding:50px 60px;
+        border-radius:30px;
+        background:rgba(255,255,255,0.08);
+        backdrop-filter:blur(15px);
+        border:1px solid rgba(255,255,255,0.1);
+        box-shadow:0 20px 60px rgba(0,0,0,0.5);
+        color:white;
+        max-width:520px;
+        animation:fadeInUp 0.8s ease;
+    }
+
+    @keyframes fadeInUp{
+        from{ opacity:0; transform:translateY(40px); }
+        to{ opacity:1; transform:translateY(0); }
+    }
+
+    /* Checkmark Animation */
+    .checkmark-circle{
+        width:90px;
+        height:90px;
+        border-radius:50%;
+        background:linear-gradient(45deg, #2ecc71, #27ae60);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        margin:0 auto 25px;
+        animation:popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s both;
+        box-shadow:0 8px 30px rgba(46,204,113,0.4);
+    }
+
+    @keyframes popIn{
+        0%{ transform:scale(0); }
+        100%{ transform:scale(1); }
+    }
+
+    .checkmark{
+        font-size:45px;
+        animation:checkPop 0.4s ease 0.8s both;
+    }
+
+    @keyframes checkPop{
+        0%{ opacity:0; transform:scale(0); }
+        50%{ transform:scale(1.3); }
+        100%{ opacity:1; transform:scale(1); }
+    }
+
+    /* Title */
+    .card h1{
+        font-size:42px;
+        font-weight:700;
+        letter-spacing:3px;
+        background:linear-gradient(45deg, #ff7b00, #ffcc00);
+        -webkit-background-clip:text;
+        -webkit-text-fill-color:transparent;
+        background-clip:text;
+        margin-bottom:10px;
+    }
+
+    .card .message{
+        color:#ccc;
+        font-size:16px;
+        line-height:1.6;
+        margin-bottom:25px;
+    }
+
+    .card .message b{
+        color:#ffcc00;
+    }
+
+    /* Order Number */
+    .order-number{
+        display:inline-block;
+        padding:10px 25px;
+        border-radius:12px;
+        background:rgba(255,123,0,0.15);
+        border:1px solid rgba(255,123,0,0.3);
+        margin-bottom:25px;
+    }
+
+    .order-number .label{
+        font-size:11px;
+        color:#999;
+        letter-spacing:2px;
+        text-transform:uppercase;
+    }
+
+    .order-number .number{
+        font-size:22px;
+        font-weight:700;
+        color:#ffcc00;
+        letter-spacing:3px;
+    }
+
+    /* Time Estimate */
+    .estimate{
+        display:flex;
+        justify-content:center;
+        gap:30px;
+        margin-bottom:30px;
+    }
+
+    .estimate-item{
+        text-align:center;
+    }
+
+    .estimate-item .icon{
+        font-size:24px;
+        margin-bottom:5px;
+    }
+
+    .estimate-item .value{
+        font-size:16px;
+        font-weight:600;
+        color:white;
+    }
+
+    .estimate-item .desc{
+        font-size:11px;
+        color:#888;
+        letter-spacing:1px;
+    }
+
+    /* Buttons */
+    .btn-group{
+        display:flex;
+        gap:15px;
+        justify-content:center;
+        flex-wrap:wrap;
+    }
+
+    .btn{
+        padding:13px 35px;
+        font-size:15px;
+        font-weight:600;
+        font-family:'Poppins', sans-serif;
+        border:none;
+        border-radius:14px;
+        cursor:pointer;
+        transition:all 0.3s ease;
+        text-decoration:none;
+        display:inline-block;
+        letter-spacing:0.5px;
+    }
+
+    .btn-primary{
+        background:linear-gradient(45deg, #ff7b00, #ffcc00);
+        color:#1a1a2e;
+    }
+
+    .btn-primary:hover{
+        transform:translateY(-3px);
+        box-shadow:0 10px 30px rgba(255,123,0,0.4);
+    }
+
+    .btn-outline{
+        background:transparent;
+        color:white;
+        border:1px solid rgba(255,255,255,0.2);
+    }
+
+    .btn-outline:hover{
+        background:rgba(255,255,255,0.1);
+        transform:translateY(-3px);
+    }
+
+    /* Footer */
+    .card-footer{
+        margin-top:25px;
+        font-size:12px;
+        color:#555;
+        letter-spacing:2px;
+    }
+
+    @media (max-width:550px){
+        .card{
+            margin:20px;
+            padding:35px 25px;
+        }
+        .card h1{
+            font-size:30px;
+        }
+        .estimate{
+            flex-direction:column;
+            gap:15px;
+        }
+        .btn-group{
+            flex-direction:column;
+        }
+        .btn{
+            width:100%;
+            text-align:center;
+        }
+    }
+    </style>
+</head>
+<body>
+
+    <!-- Confetti -->
+    <div class="confetti">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <div class="card">
+        <!-- Animated Checkmark -->
+        <div class="checkmark-circle">
+            <span class="checkmark">✓</span>
+        </div>
+
+        <h1>THANK YOU!</h1>
+
+        <p class="message">
+            Your order at <b>AZ Restaurant</b> has been confirmed! 🍽️<br>
+            Have a wonderful day 😊
+        </p>
+
+        <!-- Order Number -->
+        <div class="order-number">
+            <div class="label">ORDER NUMBER</div>
+            <div class="number" id="orderNum">—</div>
+        </div>
+
+        <!-- Estimates -->
+        <div class="estimate">
+            <div class="estimate-item">
+                <div class="icon">⏱️</div>
+                <div class="value" id="estTime">—</div>
+                <div class="desc">EST. TIME</div>
+            </div>
+            <div class="estimate-item">
+                <div class="icon">📍</div>
+                <div class="value">AZ Restaurant</div>
+                <div class="desc">LOCATION</div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="btn-group">
+            <a href="track.html" id="trackBtn" class="btn btn-primary">🛵 Track Your Order</a>
+            <a href="home.html" class="btn btn-outline">🏠 Back to Home</a>
+        </div>
+
+        <div class="card-footer">
+            © 2026 AZ RESTAURANT • Fresh Food • Great Taste
+        </div>
+    </div>
+
+<script>
+// Parse URL parameters
+const urlParams = new URLSearchParams(window.location.search);
+const refStr = urlParams.get('ref') || 'AZ' + Math.floor(1000 + Math.random() * 9000);
+const typeStr = urlParams.get('type') || 'order';
+
+// Update display text based on order or booking
+if (typeStr === 'booking') {
+    document.querySelector('.label').textContent = 'BOOKING NUMBER';
+    document.querySelector('.message').innerHTML = `Your table at <b>AZ Restaurant</b> has been booked! 🍽️<br>We look forward to seeing you 😊`;
+    document.getElementById('estTime').textContent = 'Confirmed';
+    // Hide tracking button for table bookings (nothing to track)
+    const trackBtn = document.getElementById('trackBtn');
+    if (trackBtn) trackBtn.style.display = 'none';
+} else {
+    // Generate estimated time for orders
+    let mins = Math.floor(15 + Math.random() * 30);
+    document.getElementById('estTime').textContent = mins + ' mins';
+}
+
+// Display Reference ID
+document.getElementById('orderNum').textContent = refStr;
+
+// Update Tracking Button Link
+const trackBtn = document.getElementById('trackBtn');
+if (trackBtn) {
+    trackBtn.href = `track.html?ref=${refStr}`;
+}
+</script>
+
+</body>
+</html>

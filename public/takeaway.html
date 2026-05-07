@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AZ Restaurant - Take Away</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+    }
+
+    body{
+        font-family:'Poppins', 'Segoe UI', sans-serif;
+        background:url("restaurant.jpg") center/cover no-repeat fixed;
+        min-height:100vh;
+        padding-bottom:40px;
+    }
+
+    body::before{
+        content:"";
+        position:fixed;
+        width:100%;
+        height:100%;
+        background:linear-gradient(135deg, rgba(0,0,0,0.7), rgba(20,10,0,0.8));
+        z-index:0;
+    }
+
+    /* Title */
+    .title{
+        text-align:center;
+        padding-top:30px;
+        position:relative;
+        z-index:1;
+    }
+
+    .title h1{
+        font-size:48px;
+        font-weight:700;
+        letter-spacing:3px;
+        background:linear-gradient(45deg, #ff7b00, #ffcc00);
+        -webkit-background-clip:text;
+        -webkit-text-fill-color:transparent;
+        background-clip:text;
+    }
+
+    .title p{
+        color:#999;
+        font-size:13px;
+        letter-spacing:5px;
+        margin-top:5px;
+        text-transform:uppercase;
+    }
+
+    /* Navbar */
+    .navbar{
+        position:relative;
+        z-index:1;
+        display:flex;
+        justify-content:center;
+        margin:20px auto;
+        width:fit-content;
+        padding:14px 40px;
+        border-radius:50px;
+        background:linear-gradient(45deg, #ff7b00, #ffcc00);
+        box-shadow:0 8px 32px rgba(255,123,0,0.3);
+    }
+
+    .navbar a{
+        text-decoration:none;
+        color:#1a1a2e;
+        font-size:16px;
+        font-weight:600;
+        margin:0 25px;
+        transition:all 0.3s ease;
+        position:relative;
+    }
+
+    .navbar a:hover{
+        color:white;
+        transform:scale(1.05);
+    }
+
+    .navbar a.active{
+        color:white;
+    }
+
+    .navbar a.active::after{
+        content:"";
+        position:absolute;
+        bottom:-6px;
+        left:0;
+        width:100%;
+        height:3px;
+        background:white;
+        border-radius:2px;
+    }
+
+    /* Main Layout */
+    .main-container{
+        position:relative;
+        z-index:1;
+        display:flex;
+        max-width:1000px;
+        margin:30px auto;
+        padding:0 20px;
+        gap:25px;
+    }
+
+    /* Order Form Card */
+    .order-card{
+        flex:1;
+        background:rgba(255,255,255,0.08);
+        backdrop-filter:blur(12px);
+        padding:30px;
+        border-radius:25px;
+        border:1px solid rgba(255,255,255,0.1);
+        box-shadow:0 15px 40px rgba(0,0,0,0.3);
+        color:white;
+    }
+
+    .order-card h2{
+        font-size:24px;
+        font-weight:600;
+        margin-bottom:5px;
+    }
+
+    .order-card h2 span{
+        background:linear-gradient(45deg, #ff7b00, #ffcc00);
+        -webkit-background-clip:text;
+        -webkit-text-fill-color:transparent;
+        background-clip:text;
+    }
+
+    .order-card .subtitle{
+        color:#888;
+        font-size:13px;
+        margin-bottom:25px;
+    }
+
+    /* Input Fields */
+    .input-group{
+        margin-bottom:18px;
+    }
+
+    .input-group label{
+        display:block;
+        font-size:13px;
+        font-weight:500;
+        color:#ccc;
+        margin-bottom:8px;
+    }
+
+    .input-group select,
+    .input-group input{
+        width:100%;
+        padding:13px 16px;
+        border:1px solid rgba(255,255,255,0.15);
+        border-radius:12px;
+        outline:none;
+        font-size:14px;
+        font-family:'Poppins', sans-serif;
+        background:rgba(255,255,255,0.06);
+        color:white;
+        transition:all 0.3s ease;
+    }
+
+    .input-group input::placeholder{
+        color:#666;
+    }
+
+    .input-group select:focus,
+    .input-group input:focus{
+        border-color:#ff7b00;
+        box-shadow:0 0 20px rgba(255,123,0,0.15);
+    }
+
+    .input-group select option{
+        background:#1a1a2e;
+        color:white;
+    }
+
+    /* Quantity Controls */
+    .qty-row{
+        display:flex;
+        align-items:center;
+        gap:12px;
+    }
+
+    .qty-btn{
+        width:38px;
+        height:38px;
+        border:none;
+        border-radius:50%;
+        background:rgba(255,123,0,0.2);
+        color:#ff7b00;
+        font-size:20px;
+        font-weight:bold;
+        cursor:pointer;
+        transition:all 0.3s ease;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+    }
+
+    .qty-btn:hover{
+        background:#ff7b00;
+        color:white;
+    }
+
+    .qty-value{
+        color:white;
+        font-size:18px;
+        font-weight:600;
+        min-width:30px;
+        text-align:center;
+    }
+
+    /* Add Button */
+    .add-btn{
+        width:100%;
+        padding:13px;
+        border:none;
+        border-radius:12px;
+        background:linear-gradient(45deg, #ff7b00, #ffcc00);
+        color:#1a1a2e;
+        font-size:15px;
+        font-weight:600;
+        font-family:'Poppins', sans-serif;
+        cursor:pointer;
+        transition:all 0.3s ease;
+        margin-top:8px;
+    }
+
+    .add-btn:hover{
+        transform:scale(1.03);
+        box-shadow:0 6px 20px rgba(255,123,0,0.4);
+    }
+
+    @keyframes cartPop{
+        0%{ transform:scale(1); }
+        50%{ transform:scale(1.1); }
+        100%{ transform:scale(1); }
+    }
+
+    .add-btn.added{
+        background:linear-gradient(45deg, #2ecc71, #27ae60);
+        color:white;
+        animation:cartPop 0.4s ease;
+    }
+
+    /* Cart Card */
+    .cart-card{
+        width:350px;
+        background:rgba(255,255,255,0.08);
+        backdrop-filter:blur(15px);
+        padding:28px;
+        border-radius:25px;
+        border:1px solid rgba(255,255,255,0.1);
+        box-shadow:0 15px 40px rgba(0,0,0,0.3);
+        color:white;
+        align-self:flex-start;
+        position:sticky;
+        top:20px;
+    }
+
+    .cart-card h2{
+        font-size:22px;
+        font-weight:600;
+        margin-bottom:20px;
+        display:flex;
+        align-items:center;
+        gap:10px;
+    }
+
+    .cart-count{
+        background:#e74c3c;
+        color:white;
+        font-size:12px;
+        font-weight:700;
+        width:22px;
+        height:22px;
+        border-radius:50%;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+    }
+
+    .cart-empty{
+        text-align:center;
+        padding:25px 0;
+        color:#666;
+        font-size:14px;
+    }
+
+    .cart-empty .empty-icon{
+        font-size:45px;
+        margin-bottom:10px;
+        opacity:0.5;
+    }
+
+    /* Cart Item */
+    .cart-item{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        padding:12px 0;
+        border-bottom:1px solid rgba(255,255,255,0.08);
+        animation:slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn{
+        from{ opacity:0; transform:translateX(20px); }
+        to{ opacity:1; transform:translateX(0); }
+    }
+
+    .cart-item-info{ flex:1; }
+
+    .cart-item-name{
+        color:white;
+        font-size:14px;
+        font-weight:500;
+    }
+
+    .cart-item-meta{
+        color:#999;
+        font-size:12px;
+        margin-top:3px;
+    }
+
+    .cart-item-price{
+        color:#ffcc00;
+        font-weight:600;
+        font-size:15px;
+        margin:0 15px;
+        min-width:60px;
+        text-align:right;
+    }
+
+    .remove-btn{
+        background:rgba(231,76,60,0.15);
+        color:#e74c3c;
+        border:none;
+        width:28px;
+        height:28px;
+        border-radius:50%;
+        cursor:pointer;
+        font-size:13px;
+        transition:all 0.3s ease;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+    }
+
+    .remove-btn:hover{
+        background:#e74c3c;
+        color:white;
+    }
+
+    /* Totals */
+    .cart-divider{
+        height:1px;
+        background:linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        margin:15px 0;
+    }
+
+    .cart-subtotal{
+        display:flex;
+        justify-content:space-between;
+        color:#999;
+        font-size:14px;
+        margin-bottom:6px;
+    }
+
+    .cart-total{
+        display:flex;
+        justify-content:space-between;
+        margin-top:10px;
+    }
+
+    .cart-total span:first-child{
+        color:white;
+        font-size:18px;
+        font-weight:600;
+    }
+
+    .cart-total span:last-child{
+        color:#ffcc00;
+        font-size:24px;
+        font-weight:700;
+    }
+
+    /* Pickup Info */
+    .pickup-section{
+        margin-top:15px;
+        padding-top:15px;
+        border-top:1px solid rgba(255,255,255,0.08);
+    }
+
+    .pickup-section label{
+        display:block;
+        font-size:12px;
+        color:#999;
+        margin-bottom:6px;
+    }
+
+    .pickup-section input{
+        width:100%;
+        padding:10px 14px;
+        border:1px solid rgba(255,255,255,0.15);
+        border-radius:10px;
+        outline:none;
+        font-size:13px;
+        font-family:'Poppins', sans-serif;
+        background:rgba(255,255,255,0.06);
+        color:white;
+    }
+
+    .pickup-section input:focus{
+        border-color:#ff7b00;
+    }
+
+    /* Order Button */
+    .order-btn{
+        width:100%;
+        margin-top:18px;
+        padding:14px;
+        border:none;
+        border-radius:14px;
+        background:linear-gradient(45deg, #ff7b00, #ffcc00);
+        color:#1a1a2e;
+        font-size:16px;
+        font-weight:700;
+        font-family:'Poppins', sans-serif;
+        cursor:pointer;
+        transition:all 0.3s ease;
+        letter-spacing:1px;
+        text-transform:uppercase;
+    }
+
+    .order-btn:hover{
+        transform:translateY(-3px);
+        box-shadow:0 10px 30px rgba(255,123,0,0.4);
+    }
+
+    /* Note */
+    .note{
+        text-align:center;
+        margin-top:12px;
+        font-size:12px;
+        color:#666;
+    }
+
+    /* Responsive */
+    @media (max-width:900px){
+        .main-container{
+            flex-direction:column;
+        }
+        .cart-card{
+            width:100%;
+            position:relative;
+        }
+    }
+
+    @media (max-width:600px){
+        .navbar{
+            flex-wrap:wrap;
+            gap:10px;
+            padding:12px 20px;
+        }
+        .navbar a{
+            margin:5px 12px;
+            font-size:14px;
+        }
+        .title h1{
+            font-size:32px;
+        }
+    }
+    </style>
+</head>
+<body>
+
+    <div class="title">
+        <h1>AZ RESTAURANT</h1>
+        <p>Delicious food, delivered fresh</p>
+    </div>
+
+    <div class="navbar">
+        <a href="home.html">HOME</a>
+        <a href="table.html">TABLE BOOKING</a>
+        <a href="takeaway.html" class="active">TAKE AWAY</a>
+        <a href="hello.html">ORDER ONLINE</a>
+    </div>
+
+    <div class="main-container">
+
+        <!-- Order Form -->
+        <div class="order-card">
+            <h2>🍱 <span>Take Away Order</span></h2>
+            <p class="subtitle">Select food from our menu, pick up when ready</p>
+
+            <div class="input-group">
+                <label>Select Food Item</label>
+                <select id="food">
+                    <optgroup label="Non-Veg">
+                        <option value="150">Chicken Biryani – ₹150</option>
+                        <option value="250">Mutton Biryani – ₹250</option>
+                        <option value="120">Chicken Fried Rice – ₹120</option>
+                        <option value="120">Chicken Noodles – ₹120</option>
+                        <option value="100">Chicken Manchurian – ₹100</option>
+                        <option value="100">Butter Chicken – ₹100</option>
+                        <option value="100">Chicken Tikka – ₹100</option>
+                        <option value="150">Mutton Chukka – ₹150</option>
+                    </optgroup>
+                    <optgroup label="Veg">
+                        <option value="120">Veg Biryani – ₹120</option>
+                        <option value="100">Veg Fried Rice – ₹100</option>
+                        <option value="100">Paneer Fried Rice – ₹100</option>
+                        <option value="100">Veg Noodles – ₹100</option>
+                        <option value="100">Gobi Manchurian – ₹100</option>
+                        <option value="80">Paneer Butter Masala – ₹80</option>
+                        <option value="50">Butter Naan – ₹50</option>
+                    </optgroup>
+                    <optgroup label="Dessert">
+                        <option value="60">Gulab Jamun – ₹60</option>
+                        <option value="80">Rasmalai – ₹80</option>
+                        <option value="100">Chocolate Brownie – ₹100</option>
+                        <option value="50">Vanilla Ice Cream – ₹50</option>
+                        <option value="90">Gajar Ka Halwa – ₹90</option>
+                    </optgroup>
+                    <optgroup label="Beverages">
+                        <option value="60">Fresh Orange Juice – ₹60</option>
+                        <option value="50">Watermelon Juice – ₹50</option>
+                        <option value="70">Mango Shake – ₹70</option>
+                        <option value="60">Pineapple Juice – ₹60</option>
+                        <option value="40">Lemon Mint Cooler – ₹40</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Quantity</label>
+                <div class="qty-row">
+                    <button class="qty-btn" onclick="changeQty(-1)">−</button>
+                    <span class="qty-value" id="qtyValue">1</span>
+                    <button class="qty-btn" onclick="changeQty(1)">+</button>
+                </div>
+            </div>
+
+            <button class="add-btn" id="addBtn" onclick="addToCart()">
+                🛒 Add to Cart
+            </button>
+        </div>
+
+        <!-- Cart -->
+        <div class="cart-card">
+            <h2>🛒 Your Cart <span class="cart-count" id="cartCount">0</span></h2>
+
+            <div id="cartItems">
+                <div class="cart-empty">
+                    <div class="empty-icon">🍱</div>
+                    <p>Your cart is empty</p>
+                    <p>Add items for takeaway!</p>
+                </div>
+            </div>
+
+            <div id="cartFooter" style="display:none;">
+                <div class="cart-divider"></div>
+                <div class="cart-subtotal">
+                    <span>Subtotal</span>
+                    <span>₹<span id="subtotal">0</span></span>
+                </div>
+                <div class="cart-divider"></div>
+                <div class="cart-total">
+                    <span>Total</span>
+                    <span>₹<span id="total">0</span></span>
+                </div>
+
+                <div class="pickup-section">
+                    <label>⏰ Pick-up Date & Time</label>
+                    <input type="datetime-local" id="pickupTime" required>
+                </div>
+
+                <button class="order-btn" id="placeOrderBtn" onclick="submitOrder()">Place Takeaway Order →</button>
+
+                <div class="note">
+                    Fresh food ready for you on time 😋
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+let cart = [];
+let currentQty = 1;
+
+function changeQty(change){
+    currentQty += change;
+    if(currentQty < 1) currentQty = 1;
+    if(currentQty > 20) currentQty = 20;
+    document.getElementById('qtyValue').innerText = currentQty;
+}
+
+function addToCart(){
+    let foodSelect = document.getElementById('food');
+    let price = parseInt(foodSelect.value);
+    let name = foodSelect.options[foodSelect.selectedIndex].text;
+    let displayName = name.split(' – ')[0];
+    let qty = currentQty;
+
+    let existing = cart.find(item => item.name === displayName);
+    if(existing){
+        existing.qty += qty;
+        existing.itemTotal = existing.price * existing.qty;
+    } else {
+        cart.push({
+            name: displayName,
+            price: price,
+            qty: qty,
+            itemTotal: price * qty
+        });
+    }
+
+    let btn = document.getElementById('addBtn');
+    btn.classList.add('added');
+    btn.innerHTML = '✅ Added!';
+    setTimeout(() => {
+        btn.classList.remove('added');
+        btn.innerHTML = '🛒 Add to Cart';
+    }, 1200);
+
+    currentQty = 1;
+    document.getElementById('qtyValue').innerText = '1';
+
+    updateCart();
+}
+
+function updateCart(){
+    let cartDiv = document.getElementById('cartItems');
+    let cartFooter = document.getElementById('cartFooter');
+    let cartCount = document.getElementById('cartCount');
+
+    if(cart.length === 0){
+        cartDiv.innerHTML = `
+            <div class="cart-empty">
+                <div class="empty-icon">🍱</div>
+                <p>Your cart is empty</p>
+                <p>Add items for takeaway!</p>
+            </div>
+        `;
+        cartFooter.style.display = 'none';
+        cartCount.innerText = '0';
+        return;
+    }
+
+    cartDiv.innerHTML = '';
+    let total = 0;
+    let totalItems = 0;
+
+    cart.forEach((item, index) => {
+        total += item.itemTotal;
+        totalItems += item.qty;
+        cartDiv.innerHTML += `
+            <div class="cart-item">
+                <div class="cart-item-info">
+                    <div class="cart-item-name">${item.name}</div>
+                    <div class="cart-item-meta">${item.qty} × ₹${item.price}</div>
+                </div>
+                <div class="cart-item-price">₹${item.itemTotal}</div>
+                <button class="remove-btn" onclick="removeItem(${index})" title="Remove">✕</button>
+            </div>
+        `;
+    });
+
+    document.getElementById('subtotal').innerText = total;
+    document.getElementById('total').innerText = total;
+    cartCount.innerText = totalItems;
+    cartFooter.style.display = 'block';
+}
+
+function removeItem(index){
+    cart.splice(index, 1);
+    updateCart();
+}
+
+async function submitOrder() {
+    const pickupTime = document.getElementById('pickupTime').value;
+    if (!pickupTime) {
+        alert('Please select a pickup time.');
+        return;
+    }
+    
+    if (cart.length === 0) return;
+
+    const btn = document.getElementById('placeOrderBtn');
+    btn.innerHTML = 'Redirecting...';
+    btn.disabled = true;
+
+    const data = {
+        order_type: 'Takeaway',
+        pickup_time: pickupTime,
+        address: 'Pickup at Restaurant',
+        subtotal: document.getElementById('subtotal').innerText,
+        total: document.getElementById('total').innerText,
+        items: cart
+    };
+
+    // Save to localStorage for payment.html
+    localStorage.setItem("az_current_order", JSON.stringify(data));
+    
+    // Redirect to the new payment page
+    window.location.href = "payment.html";
+}
+</script>
+</body>
+</html>
