@@ -17,13 +17,13 @@ app.get('/', (req, res) => {
     res.redirect('/start.html');
 });
 
-// Initialize Turso/libSQL Database (cloud-hosted SQLite for Vercel)
-// For local development: uses a local file database
-// For Vercel: uses Turso cloud database via environment variables
+// Initialize Local SQLite Database
+// NOTE: On Vercel, /tmp is the only writable directory.
+// Data stored here is TEMPORARY and will be lost when the function restarts.
 const db = createClient({
-    url: process.env.TURSO_DATABASE_URL || 'file:local.db',
-    authToken: process.env.TURSO_AUTH_TOKEN,
+    url: process.env.VERCEL ? 'file:/tmp/local.db' : 'file:local.db',
 });
+
 
 // Create tables if they don't exist
 async function initDatabase() {
