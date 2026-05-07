@@ -8,20 +8,16 @@
   ],
   "routes": [
     {
+      "handle": "filesystem"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "server.js"
     },
     {
-      "src": "/(.*\\.(html|css|js|jpg|jpeg|png|gif|svg|ico|webp))",
-      "dest": "public/$1"
-    },
-    {
-      "src": "/images/(.*)",
-      "dest": "public/images/$1"
-    },
-    {
-      "src": "/",
-      "dest": "public/start.html"
+      "src": "/(.*)",
+      "dest": "server.js"
     }
   ]
 }
+
