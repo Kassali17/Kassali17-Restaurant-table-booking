@@ -219,11 +219,13 @@ body::before{
 
 /* Responsive */
 @media (max-width:768px){
+    body{ background-attachment:scroll; overflow-x:hidden; }
     .main-layout{ grid-template-columns:1fr; }
     .summary-box{ position:relative; top:0; order:-1; }
-    .navbar{ flex-wrap:wrap; gap:10px; padding:12px 20px; }
+    .navbar{ width:calc(100% - 24px); flex-wrap:wrap; gap:10px; padding:12px 20px; }
     .navbar a{ margin:5px 12px; font-size:14px; }
     .title h1{ font-size:32px; }
+    .title p{ letter-spacing:2px; font-size:11px; }
     .qr-inline-box{ flex-direction:column; text-align:center; }
 }
 </style>

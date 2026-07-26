@@ -1,3 +1,8 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
     :root {
         --primary: #ff7b00;
@@ -139,6 +144,13 @@
         transition: 0.3s;
     }
     .back-home:hover { color: var(--primary); }
+
+    @media (max-width: 600px) {
+        body { align-items: flex-start; padding: 20px 0; background-attachment: scroll; overflow-x: hidden; }
+        .container { padding: 16px 12px; }
+        .card { padding: 24px 18px; border-radius: 20px; }
+        .title h1 { font-size: 30px; }
+    }
     </style>
 </head>
 <body>

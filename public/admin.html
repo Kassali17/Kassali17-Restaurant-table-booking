@@ -180,6 +180,18 @@
     @media (max-width: 1000px) {
         .stats-grid { grid-template-columns: repeat(2, 1fr); }
     }
+
+    @media (max-width: 600px) {
+        body { padding: 20px 12px; overflow-x: hidden; }
+        .header { margin-bottom: 30px; }
+        .header h1 { font-size: 30px; }
+        .stats-grid { grid-template-columns: 1fr; gap: 12px; margin-bottom: 25px; }
+        .floor-plan { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .card { padding: 16px; border-radius: 18px; overflow-x: auto; }
+        .section-title { font-size: 20px; margin: 28px 0 14px; }
+        table { min-width: 620px; }
+        .login-card { width: calc(100% - 32px); padding: 28px 20px; }
+    }
     </style>
 </head>
 <body style="display: none;" id="adminBody">

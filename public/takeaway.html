@@ -465,7 +465,9 @@
     }
 
     @media (max-width:600px){
+        body{ background-attachment:scroll; overflow-x:hidden; }
         .navbar{
+            width:calc(100% - 24px);
             flex-wrap:wrap;
             gap:10px;
             padding:12px 20px;
@@ -477,6 +479,7 @@
         .title h1{
             font-size:32px;
         }
+        .title p{ letter-spacing:2px; font-size:11px; }
     }
     </style>
 </head>

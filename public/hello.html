@@ -534,10 +534,13 @@ body::before{
 }
 
 @media (max-width:600px){
+    body{ background-attachment:scroll; overflow-x:hidden; }
+    .main-container{ margin:20px auto; padding:0 12px; gap:20px; }
     .food-grid{
         grid-template-columns:1fr;
     }
     .navbar{
+        width:calc(100% - 24px);
         flex-wrap:wrap;
         gap:10px;
         padding:12px 20px;
@@ -549,6 +552,8 @@ body::before{
     .title h1{
         font-size:32px;
     }
+    .title p{ letter-spacing:2px; font-size:11px; }
+    .cart-card{ padding:20px; max-height:none; }
 }
 
 </style>

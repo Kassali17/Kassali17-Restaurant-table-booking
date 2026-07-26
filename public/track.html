@@ -155,6 +155,22 @@
         .back-link:hover { color: var(--primary); }
 
         .error-msg { text-align: center; color: #e74c3c; margin-top: 20px; display: none; }
+
+        @media (max-width: 600px) {
+            body { padding: 20px 12px; overflow-x: hidden; }
+            .track-container { padding: 24px 16px; border-radius: 20px; }
+            .header { margin-bottom: 24px; }
+            .header h1 { font-size: 26px; }
+            .search-box { flex-direction: column; margin-bottom: 26px; }
+            .search-box button { width: 100%; }
+            .stepper { margin-bottom: 32px; }
+            .step { width: auto; flex: 1; }
+            .circle { width: 40px; height: 40px; font-size: 16px; margin-bottom: 8px; }
+            .stepper::before, .step-progress { top: 40px; }
+            .step .label { font-size: 9px; overflow-wrap: anywhere; }
+            .info-grid { grid-template-columns: 1fr; gap: 12px; }
+            .items-table { font-size: 13px; }
+        }
     </style>
 </head>
 <body>
