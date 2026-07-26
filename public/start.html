@@ -301,6 +301,16 @@
                 password: document.getElementById('password').value
             };
 
+            const savedUser = JSON.parse(localStorage.getItem('az_demo_users') || '[]').find(user =>
+                user.email.toLowerCase() === data.email.toLowerCase() && user.password === data.password
+            );
+            if (savedUser) {
+                const { password: _, ...user } = savedUser;
+                sessionStorage.setItem('user', JSON.stringify(user));
+                window.location.replace('/home.html');
+                return;
+            }
+
             try {
                 const response = await fetch('/api/login', {
                     method: 'POST',
@@ -312,7 +322,7 @@
                 
                 if (result.success) {
                     sessionStorage.setItem('user', JSON.stringify(result.user));
-                    window.location.href = 'home.html';
+                    window.location.replace('/home.html');
                 } else {
                     err.textContent = result.error;
                     err.style.display = 'block';

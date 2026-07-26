@@ -94,8 +94,13 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    alert('Registration successful! Please login.');
-                    window.location.href = 'start.html';
+                    const savedUsers = JSON.parse(localStorage.getItem('az_demo_users') || '[]')
+                        .filter(user => user.email.toLowerCase() !== data.email.toLowerCase());
+                    const user = { id: result.userId, name: data.name, email: data.email, phone: data.phone };
+                    savedUsers.push({ ...user, password: data.password });
+                    localStorage.setItem('az_demo_users', JSON.stringify(savedUsers));
+                    sessionStorage.setItem('user', JSON.stringify(user));
+                    window.location.replace('/home.html');
                 } else {
                     err.textContent = result.error;
                     err.style.display = 'block';
