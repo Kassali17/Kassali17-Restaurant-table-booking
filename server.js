@@ -3,6 +3,7 @@ const { createClient } = require('@libsql/client');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
+const os = require('os');
 const bcrypt = require('bcryptjs');
 
 const app = express();
@@ -21,7 +22,12 @@ app.get('/', (req, res) => {
 // NOTE: On Vercel, /tmp is the only writable directory.
 // Data stored here is TEMPORARY and will be lost when the function restarts.
 const db = createClient({
-    url: process.env.VERCEL ? 'file:/tmp/local.db' : 'file:local.db',
+    // Use a Turso database in production when its credentials are configured.
+    // Netlify and Vercel functions can write only to /tmp.
+    url: process.env.TURSO_DATABASE_URL || ((process.env.VERCEL || process.env.NETLIFY)
+        ? `file:${path.join(os.tmpdir(), 'local.db').replace(/\\/g, '/')}`
+        : 'file:local.db'),
+    ...(process.env.TURSO_AUTH_TOKEN ? { authToken: process.env.TURSO_AUTH_TOKEN } : {}),
 });
 
 
@@ -416,7 +422,7 @@ app.get('/api/track/:ref', async (req, res) => {
 });
 
 // Only listen when running locally (not on Vercel)
-if (!process.env.VERCEL) {
+if (!process.env.VERCEL && !process.env.NETLIFY) {
     const port = process.env.PORT || 3000;
     app.listen(port, () => {
         console.log(`Server running on port ${port}`);
