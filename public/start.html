@@ -217,15 +217,35 @@
     }
 
     @media (max-width:500px){
+        body{
+            min-height:100dvh;
+            height:auto;
+            padding:16px 12px 56px;
+            align-items:flex-start;
+        }
+        .page-wrapper{ width:100%; }
+        .title{ margin:8px 0 20px; }
         .login-box{
-            width:90%;
-            padding:30px 25px;
+            width:100%;
+            padding:22px 20px;
+            border-radius:20px;
         }
         .title h1{
-            font-size:36px;
+            font-size:30px;
+            letter-spacing:2px;
         }
+        .title p{ font-size:10px; letter-spacing:2px; margin-top:4px; }
+        .login-box h2{ font-size:21px; }
+        .login-box .subtitle{ margin-bottom:20px; }
+        .input-group{ margin-bottom:14px; }
+        .input-group input{ padding:12px 14px; }
+        .login-btn{ padding:12px; }
+        .divider{ margin:18px 0; }
+        .login-footer{ margin-top:14px; }
+        .brand-badge{ bottom:14px; font-size:10px; }
     }
     </style>
+    <link rel="stylesheet" href="responsive.css">
 </head>
 <body>
     <div class="page-wrapper">

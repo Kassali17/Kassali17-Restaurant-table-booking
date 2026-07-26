@@ -1,0 +1,43 @@
+/* Shared guardrails for every screen size. */
+html {
+    width: 100%;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+}
+
+img, video, canvas, svg {
+    max-width: 100%;
+    height: auto;
+}
+
+input, select, textarea, button {
+    max-width: 100%;
+}
+
+@media (max-width: 600px) {
+    body {
+        background-attachment: scroll !important;
+    }
+
+    .navbar {
+        width: calc(100% - 24px) !important;
+        max-width: none;
+    }
+
+    .navbar a {
+        white-space: normal;
+        text-align: center;
+    }
+
+    .main-container, .menu-container, .track-container, .container,
+    .page-wrapper, .main-layout {
+        max-width: 100%;
+        min-width: 0;
+    }
+}
