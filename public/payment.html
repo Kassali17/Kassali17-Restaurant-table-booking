@@ -230,6 +230,7 @@ body::before{
 }
 </style>
 <link rel="stylesheet" href="responsive.css">
+<link rel="stylesheet" href="theme.css">
 </head>
 <body>
 
@@ -451,6 +452,37 @@ async function executePayment() {
   }
 }
 
+function finishOrderLocally() {
+  const orderRef = 'ORD-' + String(Date.now()).slice(-8);
+  const localOrders = JSON.parse(localStorage.getItem('az_local_orders') || '[]');
+  const requiresVerification = OD.payment_method !== 'Cash on Delivery';
+  localOrders.push({
+    ...OD,
+    orderRef,
+    status: requiresVerification ? 'Awaiting Confirmation' : 'Pending',
+    payment_status: requiresVerification ? 'Pending Admin Verification' : 'Pending (COD)',
+    created_at: new Date().toISOString()
+  });
+  localStorage.setItem('az_local_orders', JSON.stringify(localOrders));
+  localStorage.removeItem('az_current_order');
+  if (!requiresVerification) {
+    window.location.href = 'end.html?ref=' + encodeURIComponent(orderRef) + '&type=order';
+    return;
+  }
+  waitForLocalConfirmation(orderRef);
+}
+
+function waitForLocalConfirmation(orderRef) {
+  const checkConfirmation = setInterval(() => {
+    const order = JSON.parse(localStorage.getItem('az_local_orders') || '[]')
+      .find(item => item.orderRef === orderRef);
+    if (order && order.status !== 'Awaiting Confirmation') {
+      clearInterval(checkConfirmation);
+      window.location.href = 'end.html?ref=' + encodeURIComponent(orderRef) + '&type=order';
+    }
+  }, 3000);
+}
+
 async function placeStaticOrder(type, txnId) {
   showOverlay('pop-proc');
   if (type === 'bank') {
@@ -481,8 +513,7 @@ async function placeStaticOrder(type, txnId) {
     // Start polling for admin confirmation
     startPolling(result.orderRef);
   } catch(e) {
-    document.getElementById('overlay').classList.remove('show');
-    alert('Error: ' + e.message);
+    finishOrderLocally();
   }
 }
 
@@ -496,6 +527,8 @@ function startPolling(orderRef) {
       const data = await res.json();
       if (data.success && data.order.status !== 'Awaiting Confirmation') {
         clearInterval(pollInterval);
+        window.location.href = 'end.html?ref=' + encodeURIComponent(orderRef) + '&type=order';
+        return;
         // Admin confirmed! Update the UI
         document.querySelector('#pop-static .success-title').innerHTML = 'Order Confirmed! ✅';
         
@@ -529,8 +562,7 @@ async function processCOD() {
       alert('Error: ' + result.error);
     }
   } catch(e) {
-    document.getElementById('overlay').classList.remove('show');
-    alert('Server error.');
+    finishOrderLocally();
   }
 }
 </script>

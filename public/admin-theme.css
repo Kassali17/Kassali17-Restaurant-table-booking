@@ -1,0 +1,39 @@
+/* Dark operational dashboard theme, matching the requested admin design. */
+body {
+    /* Use the same restaurant backdrop and warm overlay as the home page. */
+    background:linear-gradient(135deg, rgba(4,5,12,0.70), rgba(47,22,4,0.74)), url("restaurant.jpg") center/cover fixed !important;
+    color:#f8fafc;
+}
+
+body::before {
+    background:linear-gradient(135deg, rgba(0,0,0,0.28), rgba(30,10,0,0.48)) !important;
+}
+
+.header, .card, .card[style], .stat-card, .user-card {
+    background:linear-gradient(145deg, rgba(20,23,42,0.96), rgba(11,13,29,0.97)) !important;
+    border-color:rgba(124,145,190,0.18) !important;
+    box-shadow:0 14px 32px rgba(0,0,0,0.28) !important;
+}
+
+.header p, .address-col, .payment-col, .user-card span, th,
+.stat-card .label, .t-desc { color:#98a2b8 !important; }
+td { color:#e5e7eb !important; }
+th, td { border-bottom-color:rgba(148,163,184,0.12) !important; }
+thead, tr:hover td { background:transparent !important; }
+
+.section-title { color:#ff7b00 !important; }
+.stat-card::after { background:rgba(255,123,0,0.12) !important; }
+.table-card { background:rgba(255,255,255,0.04) !important; border-color:rgba(255,255,255,0.12) !important; }
+.table-card.available { background:rgba(46,204,113,0.1) !important; }
+.table-card.occupied { background:rgba(231,76,60,0.1) !important; }
+
+#loginOverlay { background:rgba(3,4,12,0.96) !important; }
+.login-card, #loginOverlay .login-card { background:linear-gradient(145deg, #151827, #0e101d) !important; color:#fff !important; }
+
+/* Native select menus use a light system popup in some browsers.  Keep every
+   menu category readable inside that popup. */
+#menuManager select option,
+select.status-select option {
+    color:#172033 !important;
+    background:#ffffff !important;
+}

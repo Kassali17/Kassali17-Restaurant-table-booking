@@ -246,6 +246,7 @@
     }
     </style>
     <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="theme.css">
 </head>
 <body>
     <div class="page-wrapper">
@@ -307,7 +308,7 @@
             if (savedUser) {
                 const { password: _, ...user } = savedUser;
                 sessionStorage.setItem('user', JSON.stringify(user));
-                window.location.replace('/home.html');
+                window.location.replace('home.html');
                 return;
             }
 
@@ -322,14 +323,14 @@
                 
                 if (result.success) {
                     sessionStorage.setItem('user', JSON.stringify(result.user));
-                    window.location.replace('/home.html');
+                    window.location.replace('home.html');
                 } else {
                     err.textContent = result.error;
                     err.style.display = 'block';
                     btn.innerHTML = 'Login →';
                 }
             } catch (error) {
-                err.textContent = 'Server error. Please try again.';
+                err.textContent = 'Invalid email or password. Please enter a valid email and password.';
                 err.style.display = 'block';
                 btn.innerHTML = 'Login →';
             }

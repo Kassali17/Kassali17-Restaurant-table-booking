@@ -30,6 +30,7 @@
     }
     </style>
     <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="theme.css">
 </head>
 <body>
     <div class="page-wrapper">
@@ -84,6 +85,12 @@
                 password: document.getElementById('password').value
             };
 
+            const localUsers = JSON.parse(localStorage.getItem('az_demo_users') || '[]')
+                .filter(user => user.email.toLowerCase() !== data.email.toLowerCase());
+            const localUser = { id: 'local-' + Date.now(), name: data.name, email: data.email, phone: data.phone };
+            localUsers.push({ ...localUser, password: data.password });
+            localStorage.setItem('az_demo_users', JSON.stringify(localUsers));
+
             try {
                 const response = await fetch('/api/register', {
                     method: 'POST',
@@ -99,15 +106,17 @@
                     const user = { id: result.userId, name: data.name, email: data.email, phone: data.phone };
                     savedUsers.push({ ...user, password: data.password });
                     localStorage.setItem('az_demo_users', JSON.stringify(savedUsers));
-                    sessionStorage.setItem('user', JSON.stringify(user));
-                    window.location.replace('/home.html');
+                    window.location.replace('start.html');
                 } else {
+                    window.location.replace('start.html');
+                    return;
                     err.textContent = result.error;
                     err.style.display = 'block';
                     btn.innerHTML = 'Register →';
                 }
             } catch (error) {
-                err.textContent = 'Server error. Please try again.';
+                window.location.replace('start.html');
+                return;
                 err.style.display = 'block';
                 btn.innerHTML = 'Register →';
             }

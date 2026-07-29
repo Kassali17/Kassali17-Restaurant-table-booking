@@ -146,6 +146,15 @@ body::before{
     gap:20px;
 }
 
+/* Category slider for the customer ordering menu */
+.online-category-nav{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 18px;}
+.online-category-nav button{border:1px solid rgba(255,190,40,.5);border-radius:999px;background:rgba(255,140,0,.12);color:#ffe1a0;padding:9px 14px;font:600 13px 'Poppins',sans-serif;cursor:pointer;}
+.online-category-nav button:hover{background:linear-gradient(90deg,#ff7b00,#ffcc00);color:#151827;}
+.food-grid.online-category-slider{display:flex;overflow-x:auto;overflow-y:hidden;gap:20px;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:4px 4px 16px;}
+.online-category-section{flex:0 0 100%;scroll-snap-align:start;}
+.online-category-section h3{color:#ffc21a;font-size:19px;margin:4px 0 14px;}
+.online-category-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;}
+
 /* ===== FOOD CARD ===== */
 
 .food-card{
@@ -558,6 +567,7 @@ body::before{
 
 </style>
 <link rel="stylesheet" href="responsive.css">
+<link rel="stylesheet" href="theme.css">
 </head>
 
 <body>
@@ -583,6 +593,12 @@ body::before{
 <div class="food-menu">
 <h2>🍽️ <span>Our Menu</span></h2>
 
+<div class="online-category-nav" aria-label="Menu categories">
+    <button type="button" onclick="slideOnlineCategory('Non-Veg')">🍗 Non‑Veg</button>
+    <button type="button" onclick="slideOnlineCategory('Veg')">🥗 Veg</button>
+    <button type="button" onclick="slideOnlineCategory('Dessert')">🍰 Desserts</button>
+    <button type="button" onclick="slideOnlineCategory('Drinks')">🥤 Fresh Juices</button>
+</div>
 <div class="food-grid">
 
 <!-- Card 1: Chicken Biryani -->
@@ -1358,6 +1374,52 @@ async function submitOrder() {
     // Redirect to the new payment page
     window.location.href = "payment.html";
 }
+</script>
+<script src="menu-data.js"></script>
+<script>
+  function renderAdminMenuForOnlineOrder() {
+    const grid = document.querySelector('.food-grid');
+    if (!grid || typeof getAzMenu !== 'function') return;
+    const icon = { 'Non-Veg':'🍗', Veg:'🥗', Dessert:'🍰', Drinks:'🥤' };
+    const escapeText = value => { const node = document.createElement('div'); node.textContent = value; return node.innerHTML; };
+    grid.innerHTML = getAzMenu().map((item, index) => {
+      const cardId = `admin-food-${index}`;
+      const knownImages = {
+        'Chicken Biryani':'chicken_biryani.jpg', 'Mutton Biryani':'mutton_biryani.jpg', 'Chicken Fried Rice':'chicken_fried_rice.jpg', 'Chicken Noodles':'chicken_noodles.jpg', 'Chicken Manchurian':'chicken_manchurian.jpg', 'Butter Chicken':'butter_chicken.jpg', 'Chicken Tikka':'chicken_tikka.jpg', 'Mutton Chukka':'mutton_chukka.jpg',
+        'Veg Biryani':'veg_biryani.jpg', 'Veg Fried Rice':'veg_fried_rice.jpg', 'Paneer Fried Rice':'paneer_fried_rice.jpg', 'Veg Noodles':'veg_noodles.jpg', 'Gobi Manchurian':'gobi_manchurian.jpg', 'Butter Naan':'butter_naan.jpg', 'Paneer Butter Masala':'paneer_butter_masala.jpg',
+        'Gulab Jamun':'gulab_jamun.jpg', 'Rasmalai':'rasmalai.jpg', 'Chocolate Brownie':'chocolate_brownie.jpg', 'Vanilla Ice Cream':'vanilla_ice_cream.jpg', 'Gajar Ka Halwa':'gajar_ka_halwa.jpg',
+        'Fresh Orange Juice':'orange_juice.jpg', 'Watermelon Juice':'watermelon_juice.jpg', 'Mango Shake':'mango_shake.jpg', 'Pineapple Juice':'pineapple_juice.jpg', 'Lemon Mint Cooler':'lemon_mint_cooler.jpg'
+      };
+      const fallbackImages = { 'Non-Veg':'chicken_biryani.jpg', Veg:'veg_biryani.jpg', Dessert:'chocolate_brownie.jpg', Drinks:'orange_juice.jpg' };
+      const image = item.image || knownImages[item.name] || fallbackImages[item.category];
+      return `<div class="food-card" id="${cardId}">
+        <div class="food-card-img"><img src="${image.startsWith('data:') ? image : 'images/' + image}" alt="${escapeText(item.name)}"></div>
+        <div class="food-card-body"><h3>${escapeText(item.name)}</h3><p class="food-desc">${escapeText(item.category)} special, freshly prepared to order.</p>
+        <div class="food-card-bottom"><div class="food-price">₹${Number(item.price)} <small>/plate</small></div><div class="qty-controls"><button class="qty-btn" onclick="changeQty('${cardId}', -1)">−</button><span class="qty-value" id="qty-${cardId}">1</span><button class="qty-btn" onclick="changeQty('${cardId}', 1)">+</button></div></div>
+        <button class="add-btn" data-name="${escapeText(item.name)}" onclick="addMenuItemToCart(this, ${Number(item.price)}, '${cardId}')">🛒 Add to Cart</button></div></div>`;
+    }).join('');
+    const categories = [['Non-Veg','🍗 Non‑Veg Dishes'],['Veg','🥗 Veg Dishes'],['Dessert','🍰 Desserts'],['Drinks','🥤 Fresh Juices']];
+    const cards = [...grid.children];
+    grid.classList.add('online-category-slider');
+    grid.innerHTML = '';
+    categories.forEach(([category, title]) => {
+      const section = document.createElement('section');
+      section.className = 'online-category-section';
+      section.id = `online-${category.toLowerCase().replace(/[^a-z]/g, '-')}`;
+      section.innerHTML = `<h3>${title}</h3><div class="online-category-cards"></div>`;
+      const holder = section.querySelector('.online-category-cards');
+      getAzMenu().forEach((item, index) => { if (item.category === category && cards[index]) holder.appendChild(cards[index]); });
+      grid.appendChild(section);
+    });
+  }
+  function addMenuItemToCart(button, price, cardId) { addToCart(button.dataset.name, price, cardId); }
+  function slideOnlineCategory(category) {
+    const grid = document.querySelector('.food-grid');
+    const section = document.getElementById(`online-${category.toLowerCase().replace(/[^a-z]/g, '-')}`);
+    if (grid && section) grid.scrollTo({ left:section.offsetLeft - grid.offsetLeft, behavior:'smooth' });
+  }
+  renderAdminMenuForOnlineOrder();
+  window.addEventListener('storage', event => { if (event.key === 'az_menu_items') renderAdminMenuForOnlineOrder(); });
 </script>
 </body>
 </html>

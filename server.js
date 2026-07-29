@@ -73,6 +73,13 @@ async function initDatabase() {
             quantity INTEGER,
             price INTEGER,
             FOREIGN KEY (order_id) REFERENCES orders(id)
+        )`,
+        `CREATE TABLE IF NOT EXISTS feedback (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            order_ref TEXT,
+            rating INTEGER,
+            comment TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )`
     ], 'write');
     console.log('Database tables initialized.');
@@ -201,6 +208,11 @@ app.post('/api/orders', async (req, res) => {
         console.log(`Verifying Transaction ID: "${tid}" for Method: ${payment_method}`);
 
         // STEP 2: For UPI / Card — enforce a REAL transaction ID
+        if (isCOD) {
+            await insertOrder('Pending (COD)', 'Pending');
+            return;
+        }
+
         if (!isCOD) {
             // Must not be empty
             if (!tid) {
@@ -243,7 +255,7 @@ app.post('/api/orders', async (req, res) => {
             await insertOrder('Pending Admin Verification', 'Awaiting Confirmation');
         } else {
             // COD: no transaction ID needed — order is placed directly
-            await insertOrder('Pending (COD)', 'Pending');
+            await insertOrder('Pending Admin Verification', 'Awaiting Confirmation');
         }
 
         async function insertOrder(paymentStatus, orderStatus) {
@@ -274,14 +286,28 @@ app.post('/api/orders', async (req, res) => {
     }
 });
 
+app.post('/api/feedback', async (req, res) => {
+    try {
+        const { orderRef, rating, comment } = req.body;
+        await db.execute({
+            sql: 'INSERT INTO feedback (order_ref, rating, comment) VALUES (?, ?, ?)',
+            args: [orderRef, rating, comment || '']
+        });
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // 5. GET ADMIN DATA
 app.get('/api/admin/data', async (req, res) => {
     try {
-        const [usersResult, bookingsResult, ordersResult, itemsResult] = await Promise.all([
+        const [usersResult, bookingsResult, ordersResult, itemsResult, feedbackResult] = await Promise.all([
             db.execute('SELECT id, name, email, phone FROM users ORDER BY id DESC'),
             db.execute('SELECT * FROM bookings ORDER BY created_at DESC'),
             db.execute('SELECT * FROM orders ORDER BY created_at DESC'),
-            db.execute('SELECT * FROM order_items')
+            db.execute('SELECT * FROM order_items'),
+            db.execute('SELECT * FROM feedback ORDER BY created_at DESC')
         ]);
         
         res.json({ 
@@ -289,7 +315,8 @@ app.get('/api/admin/data', async (req, res) => {
             users: usersResult.rows, 
             bookings: bookingsResult.rows, 
             orders: ordersResult.rows, 
-            items: itemsResult.rows 
+            items: itemsResult.rows,
+            feedback: feedbackResult.rows
         });
     } catch (err) {
         res.status(500).json({ error: err.message });

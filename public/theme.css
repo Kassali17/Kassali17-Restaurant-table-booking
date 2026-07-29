@@ -1,0 +1,87 @@
+/* Shared restaurant theme, aligned with the home page. */
+:root {
+    --restaurant-orange: #ff7b00;
+    --restaurant-gold: #ffcc00;
+    --restaurant-ink: #1a1a2e;
+    --restaurant-glass: rgba(18, 13, 12, 0.72);
+}
+
+body {
+    background: linear-gradient(135deg, rgba(0,0,0,0.72), rgba(30,14,0,0.82)), url("restaurant.jpg") center/cover fixed !important;
+    color: #fff;
+}
+
+.card, .login-box, .track-container, .container, .stat-card, .user-card {
+    background: var(--restaurant-glass) !important;
+    border-color: rgba(255,255,255,0.14) !important;
+    color: #fff;
+}
+
+.header p, .section-title + p, .subtitle, .card p, .user-card span,
+.address-col, .payment-col, th, .stat-card .label, .t-desc {
+    color: #c7c7c7 !important;
+}
+
+th, td { border-bottom-color: rgba(255,255,255,0.1) !important; }
+td { color: #f3f4f6; }
+
+.section-title { color: var(--restaurant-orange) !important; }
+
+.login-card, #loginOverlay .login-card {
+    background: rgba(18,13,12,0.9) !important;
+    color: #fff;
+    border-color: rgba(255,255,255,0.14) !important;
+}
+
+#loginOverlay { background: rgba(0,0,0,0.84) !important; }
+.login-card input, select.status-select { background: rgba(255,255,255,0.08) !important; color: #fff !important; border-color: rgba(255,255,255,0.18) !important; }
+
+/* Premium restaurant dashboard styling. */
+body .card, body .card[style], body .stat-card, body .user-card, body .header {
+    background: linear-gradient(145deg, rgba(44,27,15,0.92), rgba(12,15,30,0.94)) !important;
+    border-color: rgba(255,123,0,0.3) !important;
+    box-shadow: 0 14px 32px rgba(0,0,0,0.32) !important;
+}
+
+body .table-card, body .feedback-card {
+    background: linear-gradient(145deg, rgba(44,27,15,0.92), rgba(18,20,35,0.94)) !important;
+    border-color: rgba(255,123,0,0.35) !important;
+    color: #ffcc00 !important;
+}
+
+body .table-card.available { background: linear-gradient(145deg, rgba(10,74,48,0.72), rgba(18,20,35,0.94)) !important; border-color: rgba(46,204,113,0.6) !important; }
+body .table-card.occupied { background: linear-gradient(145deg, rgba(91,27,27,0.72), rgba(18,20,35,0.94)) !important; border-color: rgba(231,76,60,0.6) !important; }
+body .stat-card { border-top: 3px solid #ff7b00 !important; }
+body .stat-card.revenue { border-top-color: #2ecc71 !important; }
+body .section-title { text-shadow: 0 3px 12px rgba(255,123,0,0.28); }
+body .header h1 { text-shadow: 0 4px 16px rgba(255,123,0,0.25); }
+body th { color: #ffcc00 !important; }
+body td { color: #f5f5f5 !important; }
+
+/* Shared premium glass panels for customer pages. */
+body {
+    background:linear-gradient(135deg, rgba(4,5,12,0.7), rgba(47,22,4,0.74)), url("restaurant.jpg") center/cover fixed !important;
+}
+
+.food-card, .cart-card, .menu-card, .payment-section, .summary-box,
+.info-item, .order-info, .feedback-card, .qr-inline-box, .booking-form {
+    background:rgba(20,18,27,0.68) !important;
+    border:1px solid rgba(255,255,255,0.16) !important;
+    backdrop-filter:blur(18px);
+    box-shadow:0 16px 38px rgba(0,0,0,0.34);
+}
+
+.food-card:hover, .menu-card:hover, .table:hover {
+    border-color:rgba(255,123,0,0.58) !important;
+    box-shadow:0 24px 48px rgba(255,123,0,0.22);
+}
+
+.navbar { backdrop-filter:blur(14px); }
+.title { text-shadow:0 4px 14px rgba(0,0,0,0.4); }
+.order-cta a, .submit-btn, .order-btn, .login-btn, .btn { box-shadow:0 12px 25px rgba(234,88,12,0.3); }
+
+body .navbar { box-shadow:0 12px 28px rgba(234,88,12,0.28); }
+
+@media (max-width: 600px) {
+    body { background-attachment: scroll !important; }
+}

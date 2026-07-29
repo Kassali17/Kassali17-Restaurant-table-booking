@@ -1,0 +1,59 @@
+/* Customer-attractive light home experience. */
+body {
+    background:linear-gradient(135deg, rgba(255,250,244,0.9), rgba(248,252,255,0.9)), url("restaurant.jpg") center/cover fixed !important;
+    color:#1f2937;
+}
+
+body::before { background:linear-gradient(135deg, rgba(255,255,255,0.72), rgba(255,247,237,0.7)); }
+
+.title {
+    width:min(92%, 760px);
+    margin:28px auto 0;
+    padding:28px 20px;
+    border-radius:28px;
+    background:rgba(255,255,255,0.84);
+    border:1px solid rgba(255,255,255,0.95);
+    box-shadow:0 16px 38px rgba(15,23,42,0.13);
+}
+
+.title h1 { text-shadow:0 3px 12px rgba(255,123,0,0.2); }
+.title p { color:#475569; font-weight:600; }
+.navbar { box-shadow:0 12px 28px rgba(234,88,12,0.28); }
+.section-title { color:#334155; }
+.section-title::after { content:""; display:block; width:70px; height:4px; margin:10px auto 0; border-radius:99px; background:linear-gradient(90deg,#ff7b00,#ffcc00); }
+
+.menu-card {
+    position:relative;
+    background:rgba(255,255,255,0.92);
+    border-color:rgba(255,123,0,0.18);
+    box-shadow:0 14px 32px rgba(15,23,42,0.12);
+}
+
+.menu-card::before { content:""; position:absolute; left:24px; right:24px; top:0; height:4px; border-radius:0 0 99px 99px; background:linear-gradient(90deg,#ff7b00,#ffcc00); }
+.menu-card:hover { box-shadow:0 22px 42px rgba(234,88,12,0.22); }
+.menu-card .card-header { color:#64748b; }
+.menu-item { border-bottom-color:#e2e8f0; }
+.menu-item .item-name { color:#334155; }
+.menu-item .item-price { color:#ea580c; }
+.order-cta a { box-shadow:0 12px 25px rgba(234,88,12,0.3); }
+.footer { color:#64748b; }
+
+@media (max-width:768px) {
+    body { background-attachment:scroll !important; }
+    .title { margin-top:16px; padding:20px 14px; }
+}
+
+/* Premium glass finish. */
+body { background:linear-gradient(135deg, rgba(4,5,12,0.7), rgba(47,22,4,0.74)), url("restaurant.jpg") center/cover fixed !important; color:#fff; }
+body::before { background:linear-gradient(135deg, rgba(0,0,0,0.28), rgba(30,10,0,0.48)); }
+.title { background:rgba(18,16,23,0.6); border-color:rgba(255,255,255,0.18); backdrop-filter:blur(18px); box-shadow:0 18px 45px rgba(0,0,0,0.35); }
+.title p { color:#e5e7eb; }
+.navbar { background:linear-gradient(135deg, rgba(255,123,0,0.95), rgba(255,204,0,0.9)); backdrop-filter:blur(14px); }
+.section-title { color:#fff; text-shadow:0 4px 14px rgba(0,0,0,0.4); }
+.menu-card { background:rgba(20,18,27,0.68); border-color:rgba(255,255,255,0.16); backdrop-filter:blur(18px); box-shadow:0 16px 38px rgba(0,0,0,0.34); }
+.menu-card:hover { border-color:rgba(255,123,0,0.58); box-shadow:0 24px 48px rgba(255,123,0,0.22); }
+.menu-card .card-header { color:#cbd5e1; }
+.menu-item { border-bottom-color:rgba(255,255,255,0.1); }
+.menu-item .item-name { color:#f8fafc; }
+.menu-item .item-price { color:#ffcc00; }
+.footer { color:#cbd5e1; }

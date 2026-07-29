@@ -303,6 +303,8 @@
     }
     </style>
     <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="home-light.css">
 </head>
 <body>
     <div class="title">
@@ -465,5 +467,21 @@
     <div class="footer">
         © 2026 AZ RESTAURANT • Fresh Food • Great Taste
     </div>
+    <script src="menu-data.js"></script>
+    <script>
+      function renderSavedMenu() {
+        const categories = ['Non-Veg', 'Veg', 'Dessert', 'Drinks'];
+        const menu = getAzMenu();
+        document.querySelectorAll('.menu-container .menu-card').forEach((card, index) => {
+          const list = card.querySelector('.menu-list');
+          if (!list) return;
+          const items = menu.filter(item => item.category === categories[index]);
+          list.innerHTML = items.length ? items.map(item => `<div class="menu-item"><span class="item-name">${escapeHtml(item.name)}</span><span class="item-price">₹${Number(item.price)}</span></div>`).join('') : '<div class="menu-item"><span class="item-name">No items available today</span></div>';
+        });
+      }
+      function escapeHtml(value) { const el = document.createElement('div'); el.textContent = value; return el.innerHTML; }
+      renderSavedMenu();
+      window.addEventListener('storage', event => { if (event.key === 'az_menu_items') renderSavedMenu(); });
+    </script>
 </body>
 </html>

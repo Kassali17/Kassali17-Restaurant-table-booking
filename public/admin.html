@@ -192,10 +192,69 @@
         table { min-width: 620px; }
         .login-card { width: calc(100% - 32px); padding: 28px 20px; }
     }
+
+    /* Light admin theme */
+    body { background:#f4f7fb; color:#1f2937; }
+    body::before { background:radial-gradient(circle at 10% 20%, rgba(255,123,0,0.12), transparent 40%), radial-gradient(circle at 90% 80%, rgba(52,152,219,0.1), transparent 40%); }
+    .header p, .header .subtitle { color:#64748b; }
+    .card, .stat-card, .user-card { background:#ffffff; border-color:#e2e8f0; box-shadow:0 8px 24px rgba(15,23,42,0.08); }
+    .stat-card:hover, .table-card:hover { background:#fff7ed; }
+    .stat-card .label, .t-desc, th { color:#64748b; }
+    th, td { border-bottom-color:#e2e8f0; }
+    td { color:#334155; }
+    .section-title { color:#ea580c; }
+    .table-card { background:#ffffff; border-color:#dbe4ef; }
+    .table-card.available { background:#ecfdf5; border-color:#86efac; }
+    .table-card.occupied { background:#fef2f2; border-color:#fca5a5; }
+    .t-user { color:#334155; }
+    select.status-select { background:#ffffff; color:#1f2937; border-color:#cbd5e1; }
+    .address-col, .payment-col, .user-card span { color:#64748b; }
+    #loginOverlay { background:rgba(241,245,249,0.96); }
+    .login-card { background:#ffffff; border-color:#e2e8f0; box-shadow:0 20px 50px rgba(15,23,42,0.15); color:#1f2937; }
+    .login-card input { background:#ffffff; color:#1f2937; border-color:#cbd5e1; }
+    .login-card input::placeholder { color:#94a3b8; }
+
+    /* Visual polish */
+    body { background:linear-gradient(135deg, #fffaf5 0%, #f8fbff 48%, #f4f0ff 100%); }
+    .header { padding:28px 24px; border-radius:28px; background:rgba(255,255,255,0.82); border:1px solid rgba(255,255,255,0.9); box-shadow:0 14px 35px rgba(15,23,42,0.08); }
+    .header h1 { font-size:clamp(30px, 4vw, 46px); letter-spacing:-1px; }
+    .stats-grid { gap:16px; }
+    .stat-card { position:relative; overflow:hidden; text-align:left; padding:22px; border-radius:18px; }
+    .stat-card::after { content:""; position:absolute; width:90px; height:90px; right:-28px; bottom:-38px; border-radius:50%; background:rgba(255,123,0,0.1); }
+    .stat-card:nth-child(2)::after { background:rgba(52,152,219,0.12); }
+    .stat-card:nth-child(3)::after { background:rgba(46,204,113,0.12); }
+    .stat-card:nth-child(4)::after { background:rgba(155,89,182,0.12); }
+    .stat-card .value { position:relative; z-index:1; font-size:30px; }
+    .section-title { padding-left:14px; border-left:5px solid #ff7b00; letter-spacing:-0.4px; }
+    .card, .card[style] { background:rgba(255,255,255,0.9) !important; border-radius:22px; }
+    table { overflow:hidden; border-radius:14px; }
+    thead { background:#fff7ed; }
+    th { color:#9a3412; }
+    tr:hover td { background:#fffaf5; }
+    .status-badge { box-shadow:0 2px 6px rgba(15,23,42,0.08); }
+    .user-card { min-width:190px; border-radius:14px; border-left:4px solid #ff7b00; }
+    .floor-plan { padding:6px; }
+    .table-card { border-radius:16px; box-shadow:0 4px 10px rgba(15,23,42,0.04); }
+    .login-card { border-radius:28px; }
+
+    /* Restaurant-inspired customer-attractive presentation */
+    body { background:linear-gradient(135deg, rgba(255,250,245,0.94), rgba(248,251,255,0.93)), url("restaurant.jpg") center/cover fixed; }
+    .header { background:linear-gradient(135deg, rgba(255,255,255,0.94), rgba(255,247,237,0.92)); }
+    .header p { font-weight:600; }
+    .card, .card[style], .stat-card, .user-card { backdrop-filter:blur(12px); }
+    .card { border:1px solid rgba(255,255,255,0.9); }
+    .section-title { text-transform:uppercase; font-size:20px; letter-spacing:0.8px; }
+    .stat-card .label { font-weight:700; }
+    .stat-card.revenue { background:linear-gradient(135deg, #fff7ed, #ffffff); }
+    .order-card, .table-card { transition:transform 0.25s ease, box-shadow 0.25s ease; }
+    .table-card:hover { transform:translateY(-4px); box-shadow:0 12px 22px rgba(234,88,12,0.16); }
     </style>
     <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="home-light.css">
+    <link rel="stylesheet" href="admin-theme.css">
 </head>
-<body style="display: none;" id="adminBody">
+<body id="adminBody">
 
     <!-- Login Overlay -->
     <div id="loginOverlay">
@@ -203,7 +262,8 @@
             <h2 style="color:#ffcc00; margin-bottom:10px;">Admin Space</h2>
             <p style="color:#888; font-size:12px;">Authentication Required</p>
             <input type="password" id="adminPass" placeholder="••••••••">
-            <button onclick="checkPass()">ENTER DASHBOARD</button>
+            <p id="adminLoginError" style="display:none; color:#e74c3c; font-size:12px; margin:0 0 12px;"></p>
+            <button type="button" id="adminLoginButton">ENTER DASHBOARD</button>
         </div>
     </div>
 
@@ -333,6 +393,39 @@
         </table>
     </div>
 
+    <!-- Section: Customer Feedback -->
+    <h2 class="section-title">Menu Management</h2>
+    <div class="card" id="menuManager">
+        <p style="margin-bottom:16px; color:#aeb6c9;">Add, edit, or remove items shown on the customer home menu.</p>
+        <div id="menuEditorList" style="display:grid; gap:10px;"></div>
+        <div style="display:grid; grid-template-columns:150px minmax(160px,1fr) 120px minmax(150px,1fr) auto; gap:10px; margin-top:18px; align-items:center;">
+            <select id="newMenuCategory" class="status-select"><option>Non-Veg</option><option>Veg</option><option>Dessert</option><option>Drinks</option></select>
+            <input id="newMenuName" type="text" placeholder="New dish name" aria-label="New dish name">
+            <input id="newMenuPrice" type="number" min="1" placeholder="Price" aria-label="New dish price">
+            <input id="newMenuImage" type="file" accept="image/*" aria-label="Dish photo">
+            <button type="button" onclick="addMenuItem()" style="padding:11px 16px; border:0; border-radius:10px; font-weight:700; cursor:pointer; background:linear-gradient(45deg,#ff7b00,#ffcc00); color:#121827;">ADD ITEM</button>
+        </div>
+    </div>
+
+    <!-- Section: Customer Feedback -->
+    <h2 class="section-title">Customer Feedback</h2>
+    <div class="card" style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Order Ref</th>
+                    <th>Rating</th>
+                    <th>Customer Comment</th>
+                    <th>Submitted</th>
+                </tr>
+            </thead>
+            <tbody id="feedbackData">
+                <tr><td colspan="4">No customer feedback yet.</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="menu-data.js"></script>
     <script>
         // Use sessionStorage to keep admin logged in during the session
         if (sessionStorage.getItem('adminAuth') === 'true') {
@@ -342,20 +435,95 @@
         }
 
         function checkPass() {
-            const pass = document.getElementById('adminPass').value;
+            const pass = document.getElementById('adminPass').value.trim();
             if (pass === "admin123") {
                 sessionStorage.setItem('adminAuth', 'true');
                 unlockDashboard();
             } else {
-                alert("Incorrect password.");
+                const error = document.getElementById('adminLoginError');
+                error.textContent = 'Incorrect password. Please try again.';
+                error.style.display = 'block';
             }
         }
+
+        document.getElementById('adminLoginButton').addEventListener('click', checkPass);
+        document.getElementById('adminPass').addEventListener('keydown', event => {
+            if (event.key === 'Enter') checkPass();
+        });
 
         function unlockDashboard() {
             document.getElementById('loginOverlay').style.display = 'none';
             document.getElementById('adminBody').style.display = 'block';
             fetchAdminData();
             fetchAdminStats();
+            renderFeedback();
+            renderMenuManager();
+        }
+
+        function menuInputStyle() { return 'width:100%; padding:10px; border-radius:9px; border:1px solid rgba(255,255,255,.2); background:rgba(0,0,0,.16); color:inherit; font:inherit;'; }
+        function escapeMenuValue(value) { const el = document.createElement('div'); el.textContent = value; return el.innerHTML; }
+        function renderMenuManager() {
+            const list = document.getElementById('menuEditorList');
+            if (!list || typeof getAzMenu !== 'function') return;
+            const categories = ['Non-Veg', 'Veg', 'Dessert', 'Drinks'];
+            const categoryOptions = value => categories.map(category => `<option ${category === value ? 'selected' : ''}>${category}</option>`).join('');
+            list.innerHTML = getAzMenu().map(item => `<div style="display:grid; grid-template-columns:150px minmax(160px,1fr) 120px auto auto auto; gap:10px; align-items:center;">
+                <select onchange="editMenuItem('${item.id}', 'category', this.value)" style="${menuInputStyle()}">${categoryOptions(item.category)}</select>
+                <input value="${escapeMenuValue(item.name)}" onchange="editMenuItem('${item.id}', 'name', this.value)" style="${menuInputStyle()}">
+                <input type="number" min="1" value="${Number(item.price)}" onchange="editMenuItem('${item.id}', 'price', this.value)" style="${menuInputStyle()}">
+                <label style="padding:10px 12px;border-radius:9px;background:#39435b;color:#fff;font-weight:700;cursor:pointer;text-align:center;font-size:12px;">PHOTO<input type="file" accept="image/*" style="display:none" onchange="setMenuImage('${item.id}', this)"></label>
+                <button type="button" onclick="saveMenuNotice()" style="padding:10px 12px;border:0;border-radius:9px;background:#ffb400;color:#16121b;font-weight:700;cursor:pointer;">SAVE</button>
+                <button type="button" onclick="removeMenuItem('${item.id}')" style="padding:10px 12px;border:0;border-radius:9px;background:#c84141;color:white;font-weight:700;cursor:pointer;">REMOVE</button>
+            </div>`).join('');
+        }
+        function editMenuItem(id, field, value) {
+            const items = getAzMenu();
+            const item = items.find(menuItem => menuItem.id === id);
+            if (!item) return;
+            item[field] = field === 'price' ? Math.max(1, Number(value) || 1) : value.trim();
+            saveAzMenu(items);
+        }
+        function addMenuItem() {
+            const category = document.getElementById('newMenuCategory').value;
+            const name = document.getElementById('newMenuName').value.trim();
+            const price = Number(document.getElementById('newMenuPrice').value);
+            if (!name || !price || price < 1) { alert('Enter a dish name and valid price.'); return; }
+            const items = getAzMenu();
+            const imageInput = document.getElementById('newMenuImage');
+            const addItem = image => {
+                items.push({ id:`menu-${Date.now()}`, category, name, price, image });
+                saveAzMenu(items);
+                document.getElementById('newMenuName').value = '';
+                document.getElementById('newMenuPrice').value = '';
+                imageInput.value = '';
+                renderMenuManager();
+            };
+            if (!imageInput.files[0]) { addItem(''); return; }
+            readMenuImage(imageInput.files[0], addItem);
+        }
+        function readMenuImage(file, callback) {
+            if (!file || !file.type.startsWith('image/')) { alert('Please choose an image file.'); return; }
+            const reader = new FileReader();
+            reader.onload = () => callback(reader.result);
+            reader.readAsDataURL(file);
+        }
+        function setMenuImage(id, input) {
+            readMenuImage(input.files[0], image => {
+                const items = getAzMenu();
+                const item = items.find(menuItem => menuItem.id === id);
+                if (!item) return;
+                item.image = image;
+                saveAzMenu(items);
+                renderMenuManager();
+            });
+        }
+        function removeMenuItem(id) {
+            if (!confirm('Remove this menu item?')) return;
+            saveAzMenu(getAzMenu().filter(item => item.id !== id));
+            renderMenuManager();
+        }
+        function saveMenuNotice() {
+            alert('Menu changes saved. Customers will see the updated menu when they open or refresh the home page.');
         }
 
         let lastOrderCount = 0;
@@ -395,7 +563,11 @@
                 
                 // Also fetch sales analytics
                 fetchFoodSales();
-            } catch (err) { console.error(err); }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('salesAnalyticsData').innerHTML =
+                    '<tr><td colspan="3" style="text-align:center; color:#888; padding:20px;">No food sales data available yet.</td></tr>';
+            }
         }
 
         async function fetchFoodSales() {
@@ -416,11 +588,62 @@
                         </tr>
                     `).join('');
                 }
-            } catch (err) { console.error(err); }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('salesAnalyticsData').innerHTML =
+                    '<tr><td colspan="3" style="text-align:center; color:#888; padding:20px;">No food sales data available yet.</td></tr>';
+            }
         }
 
         let allOrderItems = [];
         let allBookings = [];
+
+        function getLocalUsers() {
+            return JSON.parse(localStorage.getItem('az_demo_users') || '[]').map(({ password, ...user }) => user);
+        }
+
+        function getLocalOrders() {
+            return JSON.parse(localStorage.getItem('az_local_orders') || '[]').map((order, index) => ({
+                ...order,
+                id: order.orderRef || `local-${index + 1}`,
+                status: order.status || 'Pending',
+                created_at: order.created_at || new Date().toISOString()
+            }));
+        }
+
+        function getLocalOrderItems(orders) {
+            return orders.flatMap(order => (order.items || []).map(item => ({
+                order_id: order.id,
+                item_name: item.name || item.item_name || 'Item',
+                quantity: Number(item.qty || item.quantity || 1),
+                price: Number(item.price || 0)
+            })));
+        }
+
+        function getLocalBookings() {
+            return JSON.parse(localStorage.getItem('az_local_bookings') || '[]');
+        }
+
+        function renderFeedback() {
+            const feedback = JSON.parse(localStorage.getItem('az_feedback') || '[]');
+            const tbody = document.getElementById('feedbackData');
+            if (!feedback.length) {
+                tbody.innerHTML = '<tr><td colspan="4">No customer feedback yet.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = feedback.slice().reverse().map(item => `
+                <tr>
+                    <td>${item.orderRef || 'N/A'}</td>
+                    <td style="color:#ffcc00; font-weight:700;">${item.rating}/5</td>
+                    <td>${item.comment || 'No comment provided.'}</td>
+                    <td>${new Date(item.created_at).toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        window.addEventListener('storage', event => {
+            if (event.key === 'az_feedback') renderFeedback();
+        });
 
         async function fetchAdminData() {
             try {
@@ -428,15 +651,34 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    allOrderItems = data.items || [];
-                    allBookings = data.bookings || [];
-                    renderUsers(data.users);
-                    renderBookings(data.bookings);
-                    renderOrders(data.orders);
-                    renderTableMap(data.bookings);
+                    const localOrders = getLocalOrders();
+                    allOrderItems = [...(data.items || []), ...getLocalOrderItems(localOrders)];
+                    const serverBookings = data.bookings || [];
+                    const localBookings = getLocalBookings().filter(local => !serverBookings.some(server =>
+                        server.table_id === local.table_id && server.booking_datetime === local.booking_datetime
+                    ));
+                    allBookings = [...serverBookings, ...localBookings];
+                    const serverUsers = data.users || [];
+                    const localUsers = getLocalUsers().filter(local =>
+                        !serverUsers.some(server => server.email === local.email)
+                    );
+                    renderUsers([...serverUsers, ...localUsers]);
+                    renderBookings(allBookings);
+                    renderOrders([...(data.orders || []), ...localOrders]);
+                    setTimeout(labelConfirmButtons, 0);
+                    renderTableMap(allBookings);
                 }
             } catch (err) {
                 console.error(err);
+                // Keep the dashboard usable when the live API is unavailable.
+                renderUsers(getLocalUsers());
+                const localBookings = getLocalBookings();
+                renderBookings(localBookings);
+                const localOrders = getLocalOrders();
+                allOrderItems = getLocalOrderItems(localOrders);
+                renderOrders(localOrders);
+                setTimeout(labelConfirmButtons, 0);
+                renderTableMap(localBookings);
             }
         }
 
@@ -554,12 +796,12 @@
                                 ${o.payment_status || 'Pending'}
                             </span>
                             ${o.payment_status === 'Pending Admin Verification' ? `
-                                <button onclick="confirmPayment(${o.id})" style="margin-top:8px; display:block; padding:6px 12px; font-size:11px; background:linear-gradient(45deg, #ff7b00, #ffcc00); color:#1a1a2e; border:none; border-radius:6px; cursor:pointer; font-weight:bold; letter-spacing:0.5px;">✅ CONFIRM & PLACE ORDER</button>
+                                <button onclick="confirmPayment('${o.id}')" style="margin-top:8px; display:block; padding:6px 12px; font-size:11px; background:linear-gradient(45deg, #ff7b00, #ffcc00); color:#1a1a2e; border:none; border-radius:6px; cursor:pointer; font-weight:bold; letter-spacing:0.5px;">CONFIRM THE ORDER</button>
                             ` : ''}
                         </td>
                         <td>${new Date(o.created_at).toLocaleDateString()}</td>
                         <td>
-                            <select class="status-select" onchange="updateStatus('order', ${o.id}, this.value)">
+                            <select class="status-select" onchange="updateStatus('order', '${o.id}', this.value)">
                                 <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
                                 <option value="Preparing" ${o.status === 'Preparing' ? 'selected' : ''}>Preparing</option>
                                 <option value="Dispatched" ${o.status === 'Dispatched' ? 'selected' : ''}>Dispatched</option>
@@ -570,6 +812,8 @@
                     </tr>
                 `}).join('');
             }
+
+            labelConfirmButtons();
 
             // Render History
             if (pastOrders.length === 0) {
@@ -588,7 +832,7 @@
         }
 
         async function confirmPayment(id) {
-            if(!confirm("Have you verified the payment? This will PLACE the order and start preparation.")) return;
+            showOrderConfirmed(id);
             try {
                 const res = await fetch('/api/admin/confirm-payment', {
                     method: 'POST',
@@ -597,14 +841,52 @@
                 });
                 const result = await res.json();
                 if(result.success) {
-                    fetchAdminData();
-                    fetchAdminStats();
+                    showOrderConfirmed(id);
                 }
-                else alert("Error confirming payment");
-            } catch(e) { console.error(e); }
+                else throw new Error('Unable to confirm through the server');
+            } catch(e) {
+                // Confirm locally saved Netlify fallback orders as well.
+                const orders = JSON.parse(localStorage.getItem('az_local_orders') || '[]');
+                const order = orders.find(item => item.orderRef === id || item.id === id);
+                if (order) {
+                    order.payment_status = 'Paid';
+                    order.status = 'Preparing';
+                    localStorage.setItem('az_local_orders', JSON.stringify(orders));
+                    showOrderConfirmed(id);
+                } else {
+                    alert('Unable to confirm this order.');
+                }
+            }
+        }
+
+        function labelConfirmButtons() {
+            document.querySelectorAll('button[onclick^="confirmPayment"]').forEach(button => {
+                button.textContent = 'CONFIRM THE ORDER';
+            });
+        }
+
+        function showOrderConfirmed(id) {
+            const button = [...document.querySelectorAll('button[onclick^="confirmPayment"]')]
+                .find(item => item.getAttribute('onclick').includes(String(id)));
+            if (button) {
+                button.textContent = 'ORDER CONFIRMED & PLACED';
+                button.disabled = true;
+                button.style.opacity = '0.75';
+                button.style.cursor = 'default';
+            }
         }
 
         async function updateStatus(type, id, status) {
+            const updateLocalOrder = () => {
+                if (type !== 'order') return false;
+                const orders = JSON.parse(localStorage.getItem('az_local_orders') || '[]');
+                const order = orders.find(item => String(item.orderRef) === String(id) || String(item.id) === String(id));
+                if (!order) return false;
+                order.status = status;
+                localStorage.setItem('az_local_orders', JSON.stringify(orders));
+                fetchAdminData();
+                return true;
+            };
             try {
                 const response = await fetch('/api/admin/update-status', {
                     method: 'POST',
@@ -615,9 +897,11 @@
                 if (result.success) {
                     fetchAdminStats(); // Update totals in case of cancellations
                     fetchAdminData();
+                } else {
+                    updateLocalOrder();
                 }
             } catch (err) {
-                alert('Error updating status');
+                if (!updateLocalOrder()) alert('Error updating status');
             }
         }
     </script>

@@ -156,6 +156,15 @@
 
         .error-msg { text-align: center; color: #e74c3c; margin-top: 20px; display: none; }
 
+        .feedback-card { display:none; margin-top:30px; padding:22px; border-radius:16px; background:rgba(255,123,0,0.08); border:1px solid rgba(255,123,0,0.3); text-align:center; }
+        .feedback-card h3 { color:var(--primary); margin-bottom:8px; }
+        .feedback-card p { color:#aaa; font-size:13px; margin-bottom:14px; }
+        .rating-buttons { display:flex; justify-content:center; gap:8px; margin-bottom:14px; }
+        .rating-buttons button { width:40px; height:40px; border:1px solid rgba(255,255,255,0.2); border-radius:50%; background:rgba(255,255,255,0.06); color:#ffcc00; font-size:16px; cursor:pointer; }
+        .rating-buttons button.selected { background:var(--primary); color:#1a1a2e; border-color:var(--primary); }
+        .feedback-card textarea { width:100%; min-height:80px; padding:12px; border-radius:10px; border:1px solid var(--glass-border); background:rgba(255,255,255,0.05); color:white; resize:vertical; }
+        .feedback-card .feedback-submit { margin-top:12px; padding:10px 20px; border:0; border-radius:10px; background:var(--primary); color:#1a1a2e; font-weight:700; cursor:pointer; }
+
         @media (max-width: 600px) {
             body { padding: 20px 12px; overflow-x: hidden; }
             .track-container { padding: 24px 16px; border-radius: 20px; }
@@ -173,6 +182,7 @@
         }
     </style>
     <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="theme.css">
 </head>
 <body>
 
@@ -210,6 +220,21 @@
             </div>
         </div>
 
+        <div class="feedback-card" id="feedbackCard">
+            <h3>Share Your Feedback</h3>
+            <p>Your order was delivered. How was your experience?</p>
+            <div class="rating-buttons" id="ratingButtons">
+                <button type="button" onclick="setRating(1)">1</button>
+                <button type="button" onclick="setRating(2)">2</button>
+                <button type="button" onclick="setRating(3)">3</button>
+                <button type="button" onclick="setRating(4)">4</button>
+                <button type="button" onclick="setRating(5)">5</button>
+            </div>
+            <textarea id="feedbackComment" placeholder="Tell us about your experience (optional)"></textarea>
+            <button type="button" class="feedback-submit" onclick="submitFeedback()">SUBMIT FEEDBACK</button>
+            <p id="feedbackThanks" style="display:none; color:#2ecc71; margin-top:12px;">Thank you for your feedback!</p>
+        </div>
+
         <!-- Extra Info -->
         <div class="order-info" id="orderInfo">
             <div class="info-grid">
@@ -236,6 +261,7 @@
                 <span style="color:#888; font-size:14px;">Total Amount:</span>
                 <b style="color:var(--primary);" id="val-total">₹0</b>
             </div>
+
         </div>
     </div>
 
@@ -249,6 +275,20 @@
             document.getElementById('orderRef').value = urlRef;
             trackOrder();
         }
+
+        let trackingTimer = null;
+        let selectedRating = 0;
+
+        function startTrackingUpdates() {
+            if (trackingTimer) return;
+            trackingTimer = setInterval(trackOrder, 5000);
+        }
+
+        window.addEventListener('storage', event => {
+            if (event.key === 'az_local_orders' && document.getElementById('orderRef').value.trim()) {
+                trackOrder();
+            }
+        });
 
         async function trackOrder() {
             const ref = document.getElementById('orderRef').value.trim();
@@ -288,16 +328,43 @@
 
                     // Update Stepper
                     updateStepper(order.status);
+                    startTrackingUpdates();
                 } else {
+                    if (showLocalOrder(ref)) return;
                     stepperEl.style.display = 'none';
                     infoEl.style.display = 'none';
                     errorEl.style.display = 'block';
                 }
             } catch (err) {
                 console.error(err);
+                if (showLocalOrder(ref)) return;
                 errorEl.textContent = 'Server connection error.';
                 errorEl.style.display = 'block';
             }
+        }
+
+        function showLocalOrder(ref) {
+            const order = JSON.parse(localStorage.getItem('az_local_orders') || '[]')
+                .find(item => item.orderRef === ref);
+            if (!order) return false;
+
+            document.getElementById('stepper').style.display = 'flex';
+            document.getElementById('orderInfo').style.display = 'block';
+            document.getElementById('val-type').textContent = order.order_type || 'Order';
+            document.getElementById('val-address').textContent = order.address || 'Takeaway Pickup';
+            document.getElementById('val-total').textContent = '\u20B9' + (order.total || 0);
+
+            const table = document.getElementById('itemsTable');
+            table.innerHTML = '<tr><th>Item</th><th style="text-align:right">Qty</th><th style="text-align:right">Price</th></tr>';
+            (order.items || []).forEach(item => {
+                const name = item.name || item.item_name || 'Item';
+                const quantity = Number(item.qty || item.quantity || 1);
+                const price = Number(item.price || 0);
+                table.innerHTML += `<tr><td>${name}</td><td style="text-align:right">${quantity}</td><td style="text-align:right">\u20B9${price * quantity}</td></tr>`;
+            });
+            updateStepper(order.status || 'Pending');
+            startTrackingUpdates();
+            return true;
         }
 
         function updateStepper(status) {
@@ -319,6 +386,31 @@
                     el.classList.add('active');
                 }
             });
+
+            document.getElementById('feedbackCard').style.display = status === 'Delivered' ? 'block' : 'none';
+        }
+
+        function setRating(rating) {
+            selectedRating = rating;
+            document.querySelectorAll('#ratingButtons button').forEach((button, index) => {
+                button.classList.toggle('selected', index < rating);
+            });
+        }
+
+        function submitFeedback() {
+            if (!selectedRating) {
+                alert('Please select a rating from 1 to 5.');
+                return;
+            }
+            const feedback = JSON.parse(localStorage.getItem('az_feedback') || '[]');
+            feedback.push({
+                orderRef: document.getElementById('orderRef').value.trim(),
+                rating: selectedRating,
+                comment: document.getElementById('feedbackComment').value.trim(),
+                created_at: new Date().toISOString()
+            });
+            localStorage.setItem('az_feedback', JSON.stringify(feedback));
+            document.getElementById('feedbackThanks').style.display = 'block';
         }
     </script>
 </body>

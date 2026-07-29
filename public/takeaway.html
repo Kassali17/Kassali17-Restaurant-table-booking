@@ -454,6 +454,20 @@
     }
 
     /* Responsive */
+    .takeaway-gallery{display:flex;gap:18px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:4px 4px 14px;margin:8px 0 20px;}
+    .takeaway-category{flex:0 0 100%;scroll-snap-align:start;margin:0;}
+    .takeaway-category h3{margin:4px 0 10px;color:#ffc21a;font-size:15px;letter-spacing:.4px;}
+    .takeaway-category-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(115px,1fr));gap:10px;}
+    .menu-category-nav{display:flex;flex-wrap:wrap;gap:9px;margin:8px 0 14px;}
+    .menu-category-nav button{border:1px solid rgba(255,190,40,.5);border-radius:999px;background:rgba(255,140,0,.12);color:#ffe1a0;padding:8px 12px;font:600 12px 'Poppins',sans-serif;cursor:pointer;}
+    .menu-category-nav button:hover{background:linear-gradient(90deg,#ff7b00,#ffcc00);color:#151827;}
+    .takeaway-dish{padding:0;border:1px solid rgba(255,255,255,.16);border-radius:13px;overflow:hidden;background:rgba(10,10,18,.52);color:#fff;text-align:left;cursor:pointer;transition:.2s;}
+    .takeaway-dish:hover,.takeaway-dish.selected{transform:translateY(-2px);border-color:#ffb000;box-shadow:0 8px 18px rgba(255,123,0,.24);}
+    .takeaway-dish img{display:block;width:100%;height:78px;object-fit:cover;}
+    .takeaway-dish span{display:block;padding:8px;font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .takeaway-dish small{display:block;padding:0 8px 8px;color:#ffbd35;font-weight:700;}
+    .takeaway-category:first-child{margin-top:0;}
+
     @media (max-width:900px){
         .main-container{
             flex-direction:column;
@@ -483,6 +497,7 @@
     }
     </style>
     <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="theme.css">
 </head>
 <body>
 
@@ -505,7 +520,7 @@
             <h2>🍱 <span>Take Away Order</span></h2>
             <p class="subtitle">Select food from our menu, pick up when ready</p>
 
-            <div class="input-group">
+            <div class="input-group" style="display:none;">
                 <label>Select Food Item</label>
                 <select id="food">
                     <optgroup label="Non-Veg">
@@ -542,6 +557,17 @@
                         <option value="40">Lemon Mint Cooler – ₹40</option>
                     </optgroup>
                 </select>
+            </div>
+
+            <div class="input-group">
+                <label>Choose a menu category</label>
+                <div class="menu-category-nav" aria-label="Menu categories">
+                    <button type="button" onclick="scrollToTakeawayCategory('Non-Veg')">🍗 Non‑Veg</button>
+                    <button type="button" onclick="scrollToTakeawayCategory('Veg')">🥗 Veg</button>
+                    <button type="button" onclick="scrollToTakeawayCategory('Dessert')">🍰 Desserts</button>
+                    <button type="button" onclick="scrollToTakeawayCategory('Drinks')">🥤 Fresh Juices</button>
+                </div>
+                <div class="takeaway-gallery" id="takeawayMenuGallery"></div>
             </div>
 
             <div class="input-group">
@@ -612,6 +638,7 @@ function addToCart(){
     let price = parseInt(foodSelect.value);
     let name = foodSelect.options[foodSelect.selectedIndex].text;
     let displayName = name.split(' – ')[0];
+    displayName = foodSelect.options[foodSelect.selectedIndex].dataset.name || name;
     let qty = currentQty;
 
     let existing = cart.find(item => item.name === displayName);
@@ -717,6 +744,58 @@ async function submitOrder() {
     // Redirect to the new payment page
     window.location.href = "payment.html";
 }
+</script>
+<script src="menu-data.js"></script>
+<script>
+  function escapeMenuText(value) { const node = document.createElement('div'); node.textContent = value; return node.innerHTML; }
+  function renderAdminMenuForTakeaway() {
+    const select = document.getElementById('food');
+    if (!select || typeof getAzMenu !== 'function') return;
+    const categories = ['Non-Veg', 'Veg', 'Dessert', 'Drinks'];
+    select.innerHTML = categories.map(category => {
+      const items = getAzMenu().filter(item => item.category === category);
+      return items.length ? `<optgroup label="${category}">${items.map(item => `<option value="${Number(item.price)}" data-name="${escapeMenuText(item.name)}">${escapeMenuText(item.name)} – ₹${Number(item.price)}</option>`).join('')}</optgroup>` : '';
+    }).join('');
+    renderTakeawayGallery();
+  }
+  function renderTakeawayGallery() {
+    const gallery = document.getElementById('takeawayMenuGallery');
+    if (!gallery) return;
+    const images = {
+      'Chicken Biryani':'chicken_biryani.jpg','Mutton Biryani':'mutton_biryani.jpg','Chicken Fried Rice':'chicken_fried_rice.jpg','Chicken Noodles':'chicken_noodles.jpg','Chicken Manchurian':'chicken_manchurian.jpg','Butter Chicken':'butter_chicken.jpg','Chicken Tikka':'chicken_tikka.jpg','Mutton Chukka':'mutton_chukka.jpg','Veg Biryani':'veg_biryani.jpg','Veg Fried Rice':'veg_fried_rice.jpg','Paneer Fried Rice':'paneer_fried_rice.jpg','Veg Noodles':'veg_noodles.jpg','Gobi Manchurian':'gobi_manchurian.jpg','Butter Naan':'butter_naan.jpg','Paneer Butter Masala':'paneer_butter_masala.jpg','Gulab Jamun':'gulab_jamun.jpg','Rasmalai':'rasmalai.jpg','Chocolate Brownie':'chocolate_brownie.jpg','Vanilla Ice Cream':'vanilla_ice_cream.jpg','Gajar Ka Halwa':'gajar_ka_halwa.jpg','Fresh Orange Juice':'orange_juice.jpg','Watermelon Juice':'watermelon_juice.jpg','Mango Shake':'mango_shake.jpg','Pineapple Juice':'pineapple_juice.jpg','Lemon Mint Cooler':'lemon_mint_cooler.jpg'
+    };
+    const fallback = {'Non-Veg':'chicken_biryani.jpg',Veg:'veg_biryani.jpg',Dessert:'chocolate_brownie.jpg',Drinks:'orange_juice.jpg'};
+    const groups = [
+      ['Non-Veg', '🍗 Non‑Veg Dishes'],
+      ['Veg', '🥗 Veg Dishes'],
+      ['Dessert', '🍰 Desserts'],
+      ['Drinks', '🥤 Fresh Juices']
+    ];
+    gallery.innerHTML = groups.map(([category, title]) => {
+      const dishes = getAzMenu().filter(item => item.category === category);
+      if (!dishes.length) return '';
+      const cards = dishes.map(item => {
+        const image = item.image || images[item.name] || fallback[item.category];
+        const source = image.startsWith('data:') ? image : 'images/' + image;
+        return `<button type="button" class="takeaway-dish" data-name="${escapeMenuText(item.name)}" onclick="chooseTakeawayDish(this, ${Number(item.price)})"><img src="${source}" alt="${escapeMenuText(item.name)}"><span>${escapeMenuText(item.name)}</span><small>₹${Number(item.price)}</small></button>`;
+      }).join('');
+      return `<section class="takeaway-category" id="takeaway-${category.toLowerCase().replace(/[^a-z]/g, '-')}"><h3>${title}</h3><div class="takeaway-category-grid">${cards}</div></section>`;
+    }).join('');
+  }
+  function scrollToTakeawayCategory(category) {
+    const id = 'takeaway-' + category.toLowerCase().replace(/[^a-z]/g, '-');
+    const section = document.getElementById(id);
+    const gallery = document.getElementById('takeawayMenuGallery');
+    if (section && gallery) gallery.scrollTo({ left: section.offsetLeft - gallery.offsetLeft, behavior:'smooth' });
+  }
+  function chooseTakeawayDish(button, price) {
+    const select = document.getElementById('food');
+    const option = [...select.options].find(item => item.dataset.name === button.dataset.name && Number(item.value) === price);
+    if (option) select.value = option.value;
+    document.querySelectorAll('.takeaway-dish').forEach(item => item.classList.toggle('selected', item === button));
+  }
+  renderAdminMenuForTakeaway();
+  window.addEventListener('storage', event => { if (event.key === 'az_menu_items') renderAdminMenuForTakeaway(); });
 </script>
 </body>
 </html>
