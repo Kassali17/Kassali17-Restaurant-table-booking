@@ -795,6 +795,7 @@ async function submitOrder() {
     document.querySelectorAll('.takeaway-dish').forEach(item => item.classList.toggle('selected', item === button));
   }
   renderAdminMenuForTakeaway();
+  loadAzMenu().then(renderAdminMenuForTakeaway);
   window.addEventListener('storage', event => { if (event.key === 'az_menu_items') renderAdminMenuForTakeaway(); });
 </script>
 </body>

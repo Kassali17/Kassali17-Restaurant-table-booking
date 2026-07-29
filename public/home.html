@@ -481,6 +481,7 @@
       }
       function escapeHtml(value) { const el = document.createElement('div'); el.textContent = value; return el.innerHTML; }
       renderSavedMenu();
+      loadAzMenu().then(renderSavedMenu);
       window.addEventListener('storage', event => { if (event.key === 'az_menu_items') renderSavedMenu(); });
     </script>
 </body>

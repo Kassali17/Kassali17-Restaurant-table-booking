@@ -80,6 +80,13 @@ async function initDatabase() {
             rating INTEGER,
             comment TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )`,
+        `CREATE TABLE IF NOT EXISTS menu_items (
+            id TEXT PRIMARY KEY,
+            category TEXT NOT NULL,
+            name TEXT NOT NULL,
+            price INTEGER NOT NULL,
+            image TEXT DEFAULT ''
         )`
     ], 'write');
     console.log('Database tables initialized.');
@@ -293,6 +300,33 @@ app.post('/api/feedback', async (req, res) => {
             sql: 'INSERT INTO feedback (order_ref, rating, comment) VALUES (?, ?, ?)',
             args: [orderRef, rating, comment || '']
         });
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Shared customer menu.  This keeps admin changes available to every Netlify visitor.
+app.get('/api/menu', async (req, res) => {
+    try {
+        const result = await db.execute('SELECT id, category, name, price, image FROM menu_items ORDER BY rowid');
+        res.json({ success: true, items: result.rows });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post('/api/admin/menu', async (req, res) => {
+    try {
+        const items = Array.isArray(req.body.items) ? req.body.items : null;
+        if (!items) return res.status(400).json({ error: 'Menu items are required.' });
+        await db.batch([
+            { sql: 'DELETE FROM menu_items', args: [] },
+            ...items.map(item => ({
+                sql: 'INSERT INTO menu_items (id, category, name, price, image) VALUES (?, ?, ?, ?, ?)',
+                args: [String(item.id), String(item.category), String(item.name), Math.max(1, Number(item.price) || 1), String(item.image || '')]
+            }))
+        ], 'write');
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });

@@ -1419,6 +1419,7 @@ async function submitOrder() {
     if (grid && section) grid.scrollTo({ left:section.offsetLeft - grid.offsetLeft, behavior:'smooth' });
   }
   renderAdminMenuForOnlineOrder();
+  loadAzMenu().then(renderAdminMenuForOnlineOrder);
   window.addEventListener('storage', event => { if (event.key === 'az_menu_items') renderAdminMenuForOnlineOrder(); });
 </script>
 </body>
